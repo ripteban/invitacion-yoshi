@@ -14,7 +14,7 @@ import resplandor from '../assets/svg/resplandor.svg';
   <Img src={piscina} ancho={520.9} class="abs cubrir" calidad={90} sizes="126.43vw" style="--x:-1.825;--y:-4.065;--w:415.649;--h:926" eager />
   <!-- 68:139 · elipse desenfocada (SVG 455.65 × 216.602) centrada en (217.52, 238.804), −8° -->
   <img class="resplandor abs" src={resplandor.src} alt="" width={resplandor.width} height={resplandor.height} style="--x:-10.305;--y:130.503;--w:455.65;--h:216.602" />
-  <Img src={titulo} ancho={378.536} alt="Party Familiar con Yoshi" calidad={90} class="abs" style="--x:16.732;--y:153.947;--w:378.536;--h:198" eager />
+  <Img src={titulo} ancho={378.536} alt="Party Familiar con Yoshi" calidad={90} class="abs titulo-home" style="--x:16.732;--y:153.947;--w:378.536;--h:198" eager />
   <!-- El maestro ya trae el recorte de Figma (ver preparar-recursos.mjs) -->
   <Img src={retrato} ancho={426.874} alt="" calidad={90} class="abs" style="--x:-7.437;--y:302.526;--w:426.874;--h:639" eager />
 </div>
@@ -25,5 +25,24 @@ import resplandor from '../assets/svg/resplandor.svg';
   }
   .resplandor {
     rotate: -8deg;
+  }
+  /* Entrada al terminar el fundido de la intro y luego en espera:
+     el título crece con resorte y flota; la sombra se enciende y pulsa */
+  :global(.home.visible) .portada :global(.titulo-home) {
+    --desde: 0.85;
+    animation:
+      entrar-escala var(--dur-gentle) var(--ease-gentle) both,
+      flotar-suave 4s ease-in-out var(--dur-gentle) infinite;
+  }
+  :global(.home.visible) .resplandor {
+    animation:
+      encender 600ms var(--ease-out) both,
+      pulso-opacidad 3s ease-in-out 600ms infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.home.visible) .portada :global(.titulo-home),
+    :global(.home.visible) .resplandor {
+      animation: none;
+    }
   }
 </style>

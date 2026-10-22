@@ -7,10 +7,10 @@ import bolsa from '../assets/intro/bolsa.png';
 import mano from '../assets/svg/mano.svg';
 ---
 
-<button class="bolsa abs" type="button" aria-label="Abrir la bolsa de chicharrones" style="--x:40.714;--y:315.329;--w:330.572;--h:428.132">
+<button class="bolsa abs anim-flotar" type="button" aria-label="Abrir la bolsa de chicharrones" style="--x:40.714;--y:315.329;--w:330.572;--h:428.132">
   <Img src={bolsa} ancho={330.572} escala="intro" calidad={90} eager />
 </button>
-<img class="mano abs" src={mano.src} alt="" width={mano.width} height={mano.height} style="--x:268.028;--y:612.203;--w:73.791;--h:90.797" />
+<img class="mano abs anim-tocar" src={mano.src} alt="" width={mano.width} height={mano.height} style="--x:268.028;--y:612.203;--w:73.791;--h:90.797" />
 
 <style>
   .bolsa {

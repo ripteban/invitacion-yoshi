@@ -16,11 +16,11 @@ import { evento } from '../data/evento';
 
   <div class="intro__lienzo">
     <!-- 74:274 · título raster -->
-    <Img src={titulo} ancho={283.771} alt="¡Se armó la fiesta!" escala="intro" calidad={90} class="abs" style="--x:64.115;--y:67;--w:283.771;--h:148.431" eager />
+    <Img src={titulo} ancho={283.771} alt="¡Se armó la fiesta!" escala="intro" calidad={90} class="abs titulo-intro" style="--x:64.115;--y:67;--w:283.771;--h:148.431" eager />
 
     <!-- 22:111 y 22:112 · rayitas amarillas (centradas en la caja que reporta Figma) -->
-    <span class="rayita abs" style="--x:15.467;--y:141.986;--w:9.364;--h:27.155;rotate:-55deg"></span>
-    <span class="rayita abs" style="--x:385.294;--y:95.717;--w:9.364;--h:27.155;rotate:34deg"></span>
+    <span class="rayita abs anim-titilar" style="--x:15.467;--y:141.986;--w:9.364;--h:27.155;rotate:-55deg"></span>
+    <span class="rayita abs anim-titilar" style="--x:385.294;--y:95.717;--w:9.364;--h:27.155;rotate:34deg;--retraso:-0.8s"></span>
 
     <!-- 22:110 · instrucción, rotada −2° -->
     <p class="instruccion lilita abs" style="--x:19.16;--y:224.088;--w:373.609;--h:55.245">
@@ -48,6 +48,19 @@ import { evento } from '../data/evento';
     position: relative;
     width: calc(412 * var(--k));
     height: calc(917 * var(--k));
+  }
+  /* Rebote leve de entrada al cargar */
+  .intro :global(.titulo-intro) {
+    animation: entrar-escala var(--dur-gentle) var(--ease-gentle) 150ms both;
+  }
+  /* Al abrir, los bucles se congelan en su pose actual para que GSAP siga desde ahí sin saltos */
+  .intro.abriendo :global(:is(.anim-flotar, .anim-flotar-suave, .anim-respirar, .anim-tocar, .anim-titilar)) {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .intro :global(.titulo-intro) {
+      animation: none;
+    }
   }
   .rayita {
     background: var(--sol);
