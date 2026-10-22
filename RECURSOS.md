@@ -67,14 +67,30 @@ Solo se ve el 67.4 % central del ancho del original, y por eso su densidad efect
 | Archivo | Uso | Resultado |
 |---|---|---|
 | `chicharrones/chicharron-1…6.png` (1000 × 1000) | Apertura de la bolsa | Recortados al alfa → WebP de 400 px (18–33 KB) |
-| `Video de Entrada.mp4` (1080 × 1920, 8 s) | Fondo de la intro (`15:86`) | `public/medios/fondo-intro.mp4`, 720 × 1280, 7.25 s, 2.90 MB |
-| `Video Inicial.mp4` (1080 × 1920, 10 s) | Fondo de la portada (`71:149`) | `public/medios/fondo-portada.mp4`, 9.25 s, 2.76 MB |
-| `Video final.mp4` (1080 × 1920, 10 s) | Fondo del cierre (`72:86`) | `public/medios/fondo-cierre.mp4`, 9.25 s, 2.80 MB |
+| `Video de Entrada.mp4` (1080 × 1920, 8 s, 21 Mbps) | Fondo de la intro (`15:86`) | `public/medios/fondo-intro-{av1,hevc,h264}.mp4` |
+| `Video Inicial.mp4` (1080 × 1920, 10 s) | Fondo de la portada (`71:149`) | `public/medios/fondo-portada-{av1,hevc,h264}.mp4` |
+| `Video final.mp4` (1080 × 1920, 10 s) | Fondo del cierre (`72:86`) | `public/medios/fondo-cierre-{av1,hevc,h264}.mp4` |
 | `Retrato.png` (1024 × 1536) | Retrato | Es la misma imagen que la de Figma (diferencia 0.16): sigue en 1.62× |
 
 El primer cuadro de cada video coincide con su relleno de Figma (diferencia 1.1 sobre 255).
 Para que el bucle no tenga corte, los últimos 0.75 s se funden con los primeros: al repetirse, el salto
 (10.1) queda casi igual que entre dos cuadros seguidos (8.0).
+
+### Videos: resolución original, calidad calibrada
+
+Cada video va a 1080 × 1920, sin reescalar, en tres formatos. El navegador usa el primero que puede reproducir y solo
+descarga ese. La calidad (CRF) de cada formato la eligió `npm run calibrar`: es el archivo más liviano con
+VMAF ≥ 92 contra el original, es decir, visualmente sin pérdida. VMAF del video completo contra el original (sin el
+tramo del fundido):
+
+| Video | AV1 (Chrome, Android, Firefox) | HEVC (Safari, iPhone) | H.264 (respaldo) |
+|---|---|---|---|
+| Intro (7.25 s) | crf 33 · 4.88 MB · VMAF 92.4 | crf 27 · 5.93 MB · 92.4 | crf 25 · 8.72 MB · 92.3 |
+| Portada (9.25 s) | crf 43 · 1.87 MB · 92.4 | crf 29 · 2.33 MB · 92.9 | crf 26 · 4.05 MB · 93.4 |
+| Cierre (9.25 s) | crf 39 · 1.68 MB · 92.4 | crf 29 · 2.01 MB · 92.6 | crf 26 · 3.52 MB · 92.3 |
+
+La versión anterior (720p H.264 a ~2.8 MB) daba VMAF 70 contra el original en la intro (87.6 con el modelo de
+teléfono); la nueva da ~92 (99.9 con el modelo de teléfono).
 
 ## Falta
 

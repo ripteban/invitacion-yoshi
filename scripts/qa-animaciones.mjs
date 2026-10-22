@@ -35,7 +35,7 @@ async function probar(nombre, { reducido = false, selector = '.bolsa', video = f
   await page.waitForTimeout(1800); // animaciones en espera
   // Videos: { fondo: reproduciéndose } (solo los que existan en public/medios)
   const videos = () =>
-    page.evaluate(() => Object.fromEntries([...document.querySelectorAll('video[data-fondo]')].map((v) => [v.src.match(/fondo-(\w+)/)[1], !v.paused])));
+    page.evaluate(() => Object.fromEntries([...document.querySelectorAll('video[data-fondo]')].map((v) => [(v.currentSrc || v.querySelector('source').src).match(/fondo-([a-z]+)/)[1], !v.paused])));
   const revisarVideos = (momento, esperado) =>
     videos().then((v) => {
       for (const [k, debe] of Object.entries(esperado)) if (k in v && v[k] !== debe) fallas.push(`${nombre}: video ${k} ${debe ? 'detenido' : 'sonando'} ${momento}`);
@@ -69,7 +69,8 @@ async function probar(nombre, { reducido = false, selector = '.bolsa', video = f
   const fps = c.length ? 1000 / (c.reduce((a, b) => a + b, 0) / c.length) : 0;
 
   await page.waitForTimeout(800);
-  await revisarVideos('al abrir', { portada: !reducido, cierre: false });
+  // En móvil el fondo fijo (intro) se pausa al abrir: el Home lo tapa
+  await revisarVideos('al abrir', { intro: false, portada: !reducido, cierre: false });
 
   // Scroll hasta el final, como un usuario
   for (let i = 0; i < 24; i++) {

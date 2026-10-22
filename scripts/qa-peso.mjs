@@ -1,5 +1,6 @@
 // QA de peso: bytes que descarga un teléfono (412 px) en la intro y tras abrir y recorrer el Home,
-// separando los videos. Presupuesto del plan: intro < 1.5 MB y total < 5 MB sin videos; cada video ≤ 3 MB.
+// separando los videos. Presupuesto: intro < 1.5 MB y total < 5 MB sin videos; cada video ≤ 6 MB (van a
+// 1080p con calidad visualmente sin pérdida; ver scripts/videos.json). Solo se debe bajar un formato por video.
 // Uso: npm run build && npx astro preview  →  node scripts/qa-peso.mjs [url] [dpr]
 import { chromium } from 'playwright';
 
@@ -55,7 +56,9 @@ await b.close();
 const fallas = [];
 if (intro > 1.5 * MB) fallas.push(`intro ${kb(intro)} > 1.5 MB`);
 if (total > 5 * MB) fallas.push(`total ${kb(total)} > 5 MB`);
-for (const [k, v] of Object.entries(videos)) if (v > 3 * MB) fallas.push(`${k} ${kb(v)} > 3 MB`);
+for (const [k, v] of Object.entries(videos)) if (v > 6 * MB) fallas.push(`${k} ${kb(v)} > 6 MB`);
+const formatos = new Set(Object.keys(videos).map((k) => k.replace(/^fondo-[a-z]+-/, '')));
+if (formatos.size > 1) fallas.push(`se bajó más de un formato: ${[...formatos].join(', ')}`);
 if (fallas.length) {
   console.log('✗', fallas.join(' · '));
   process.exitCode = 1;

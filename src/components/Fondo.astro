@@ -1,0 +1,56 @@
+---
+// Fondo de la piscina (relleno 15:86 de la intro + su video), fijo detrás de todo. Igual que la seda de Katalina:
+// - Móvil: se ve en la intro y su video se pausa al abrir (la invitación cubre toda la pantalla).
+// - Tablet / escritorio: sigue visible a los lados de la tarjeta, desenfocado y con un velo claro.
+import Img from './Img.astro';
+import VideoFondo from './VideoFondo.astro';
+import fondo from '../assets/intro/fondo.png';
+---
+
+<div class="fondo" id="fondo" aria-hidden="true">
+  <div class="fondo__medio">
+    <!-- 15:86 · relleno 1080 × 1920 en "cover": se ve de 515.8 px de diseño de ancho en 412 × 917.
+         Va debajo del video: casi solo se ve mientras carga, así que basta calidad 75 -->
+    <Img src={fondo} ancho={515.8} class="llenar cubrir" calidad={75} sizes="max(100vw, 56.25vh)" eager />
+    <VideoFondo nombre="fondo-intro" fondo="fijo" />
+  </div>
+</div>
+
+<style>
+  .fondo {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: var(--fondo-intro);
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .fondo__medio {
+    position: absolute;
+    inset: 0;
+  }
+  /* Tablet / escritorio, ya abierta la invitación: un leve desenfoque y un velo dan profundidad a la
+     tarjeta. La escala esconde los bordes difusos del desenfoque. */
+  @media (min-width: 600px) {
+    .fondo__medio {
+      transition:
+        filter 600ms var(--ease-out),
+        scale 600ms var(--ease-out);
+    }
+    .fondo::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(205, 247, 253, 0.22);
+      opacity: 0;
+      transition: opacity 600ms var(--ease-out);
+    }
+    :global(body:not(.bloqueado)) .fondo__medio {
+      filter: blur(6px) saturate(1.05);
+      scale: 1.06;
+    }
+    :global(body:not(.bloqueado)) .fondo::after {
+      opacity: 1;
+    }
+  }
+</style>

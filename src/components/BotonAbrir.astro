@@ -44,4 +44,16 @@ import { evento } from '../data/evento';
     width: calc(16.319 * var(--k));
     height: calc(20.02 * var(--k));
   }
+  /* Con mouse: el botón se eleva al pasar el cursor (translate no choca con el pulso, que usa scale) */
+  @media (hover: hover) and (pointer: fine) {
+    .boton {
+      transition:
+        translate 200ms var(--ease-out),
+        filter 200ms var(--ease-out);
+    }
+    .boton:hover:not(:disabled) {
+      translate: 0 calc(-2 * var(--k));
+      filter: drop-shadow(0 calc(6 * var(--k)) calc(10 * var(--k)) rgba(11, 136, 170, 0.32));
+    }
+  }
 </style>

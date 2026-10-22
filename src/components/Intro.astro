@@ -1,22 +1,15 @@
 ---
 // Intro (frame "1" de Figma, 412 × 917): bolsa por abrir.
-// El lienzo escala con --ui para caber completo en ancho y alto; el fondo cubre toda la pantalla
-// (en 412 × 917 coincide exactamente con el relleno "cover" de Figma).
+// El lienzo escala con --ui para caber completo en ancho y alto. El fondo (Fondo.astro) va aparte y
+// cubre toda la pantalla: en 412 × 917 coincide exactamente con el relleno "cover" de Figma.
 import Img from './Img.astro';
 import Bolsa from './Bolsa.astro';
 import BotonAbrir from './BotonAbrir.astro';
-import VideoFondo from './VideoFondo.astro';
-import fondo from '../assets/intro/fondo.png';
 import titulo from '../assets/intro/titulo.png';
 import { evento } from '../data/evento';
 ---
 
 <section class="intro" id="intro" aria-label="Abrir la invitación">
-  <!-- 15:86 · relleno 1080 × 1920 en "cover": se ve de 515.8 px de diseño de ancho en 412 × 917.
-       Va debajo del video: casi solo se ve mientras carga, así que basta calidad 75 -->
-  <Img src={fondo} ancho={515.8} class="llenar cubrir" calidad={75} sizes="max(100vw, 56.25vh)" eager />
-  <VideoFondo nombre="fondo-intro" fondo="intro" />
-
   <div class="intro__lienzo">
     <!-- 74:274 · título raster -->
     <Img src={titulo} ancho={283.771} alt="¡Se armó la fiesta!" escala="intro" calidad={90} class="abs titulo-intro" style="--x:64.115;--y:67;--w:283.771;--h:148.431" eager />
@@ -44,7 +37,6 @@ import { evento } from '../data/evento';
     z-index: 40;
     display: grid;
     place-items: center;
-    background: var(--fondo-intro);
     overflow: hidden;
   }
   .intro__lienzo {

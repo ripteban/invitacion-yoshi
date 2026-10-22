@@ -1,10 +1,11 @@
 :root {
   /* Escala 1:1 con Figma: todo valor de diseño (px a 412 de ancho) se multiplica por --u.
-     --ancho es el ancho de la invitación. Por ahora solo móvil: tablet y escritorio llegan en la Fase 5. */
+     --ancho es el ancho de la invitación (ver breakpoints abajo). */
   --ancho: 100vw;
   --u: calc(var(--ancho) / 412);
-  /* Intro (frame de 412 × 917): cabe completa en ancho y en alto, incluso en iPhone SE */
-  --ui: min(calc(100vw / 412), calc(100svh / 917));
+  /* Intro (frame de 412 × 917): cabe completa en ancho y en alto, incluso en iPhone SE, con tope en
+     pantallas grandes */
+  --ui: min(calc(100vw / 412), calc(100svh / 917), 1.6px);
 
   /* Colores (variables de Figma) */
   --fondo-intro: #93e6f8;
@@ -22,6 +23,22 @@
   --dur-gentle: 1022ms;
   --ease-out: cubic-bezier(0, 0, 0.58, 1);
   --dur-dissolve: 300ms;
+}
+
+/* ---------- Breakpoints (si se cambian, actualizar también "sizes" en Img.astro) ----------
+   Igual que Katalina:
+   Móvil (< 600 px): la invitación ocupa todo el ancho, como en Figma.
+   Tablet vertical: tarjeta centrada de hasta 640 px.
+   Tablet horizontal / escritorio: tarjeta de 440–540 px sobre el video de la piscina. */
+@media (min-width: 600px) {
+  :root {
+    --ancho: clamp(440px, 34vw, 540px);
+  }
+}
+@media (min-width: 600px) and (orientation: portrait) {
+  :root {
+    --ancho: min(100vw - 128px, 640px);
+  }
 }
 
 /* Sombras en px de Figma: dependen de --k, así que se declaran donde --k existe

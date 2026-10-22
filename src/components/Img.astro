@@ -26,9 +26,13 @@ const r = Math.round;
 // comunes de Android (1.75, 2.625…), así no se baja una imagen mucho más grande de lo que se ve.
 const anchos = [...new Set([1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4].map((m) => Math.min(src.width, r(ancho * m))))];
 const vw = ((ancho / 412) * 100).toFixed(2);
-// Debe coincidir con --u y --ui de tokens.css (solo móvil; la Fase 5 agrega tablet y escritorio)
+// Debe coincidir con --u, --ui y los breakpoints de tokens.css
 const vh = ((ancho / 917) * 100).toFixed(2);
-const sizes = sizesFijo ?? (escala === 'intro' ? `min(${vw}vw, ${vh}vh)` : `${vw}vw`);
+const sizes =
+  sizesFijo ??
+  (escala === 'intro'
+    ? `min(${vw}vw, ${vh}vh, ${r(ancho * 1.6)}px)`
+    : `(min-width: 600px) and (orientation: portrait) ${r((ancho * 640) / 412)}px, (min-width: 600px) ${r((ancho * 540) / 412)}px, ${vw}vw`);
 const w = Math.min(src.width, r(ancho));
 const alto = r((src.height * w) / src.width);
 ---

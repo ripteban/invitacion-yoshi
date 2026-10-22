@@ -2,41 +2,49 @@
 // Video de fondo que reemplaza un relleno de Figma en su misma caja (object-fit: cover).
 // Va encima de la imagen de Figma, invisible hasta que de verdad se reproduce: mientras carga
 // (o si el navegador lo bloquea) se ve el diseño tal cual. Lo controla scripts/videos.ts.
-// Mientras no exista public/medios/<nombre>.mp4 no se renderiza nada.
+// Se publica en tres formatos a la resolución original (ver scripts/videos-config.mjs); el navegador
+// usa el primero que puede reproducir según su type, sin descargar los demás.
+// Mientras no exista ningún archivo en public/medios no se renderiza nada.
 import { existsSync, readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { CODECS } from '../../scripts/videos-config.mjs';
 
 interface Props {
-  /** archivo en public/medios, sin extensión */
+  /** nombre en public/medios, sin formato ni extensión (p. ej. fondo-intro) */
   nombre: string;
-  /** 'intro' arranca de inmediato; los del Home, al abrir la invitación y al estar en pantalla */
-  fondo: 'intro' | 'home';
+  /** 'fijo' arranca de inmediato (fondo de la intro); los del Home, al abrir la invitación y al estar en pantalla */
+  fondo: 'fijo' | 'home';
   class?: string;
   style?: string;
 }
 
 const { nombre, fondo, class: clase = 'llenar', style } = Astro.props;
-const archivo = `public/medios/${nombre}.mp4`;
-const hay = existsSync(archivo);
-// Versión según el contenido: si cambia el video, cambia la URL y nadie ve el anterior en caché
-const version = hay ? createHash('sha1').update(readFileSync(archivo)).digest('hex').slice(0, 8) : '';
+// Orden de preferencia: AV1 → HEVC → H.264
+const fuentes = Object.entries(CODECS)
+  .map(([codec, { tipo }]) => ({ archivo: `public/medios/${nombre}-${codec}.mp4`, ruta: `/medios/${nombre}-${codec}.mp4`, tipo }))
+  .filter(({ archivo }) => existsSync(archivo))
+  // Versión según el contenido: si cambia el video, cambia la URL y nadie ve el anterior en caché
+  .map((f) => ({ ...f, version: createHash('sha1').update(readFileSync(f.archivo)).digest('hex').slice(0, 8) }));
 ---
 
 {
-  hay && (
+  fuentes.length > 0 && (
     <video
       class:list={['video-fondo', clase]}
       style={style}
-      src={`/medios/${nombre}.mp4?v=${version}`}
       data-fondo={fondo}
       muted
       loop
       playsinline
       disablepictureinpicture
       disableremoteplayback
-      preload={fondo === 'intro' ? 'auto' : 'none'}
+      preload={fondo === 'fijo' ? 'auto' : 'none'}
       aria-hidden="true"
-    />
+    >
+      {fuentes.map(({ ruta, version, tipo }) => (
+        <source src={`${ruta}?v=${version}`} type={tipo} />
+      ))}
+    </video>
   )
 }
 
