@@ -12,18 +12,8 @@
   --navy: #062652; /* --color-navy */
   --blanco: #ffffff; /* --color-white */
   --sol: #ffe52c; /* --color-sunshine: rayitas amarillas */
-
-  /* Botón "Toca el churro" (píldora) */
   --boton-degradado: linear-gradient(to bottom, #fff349, #ffe329);
   --boton-borde: #fff5aa;
-  --boton-sombra: drop-shadow(0 calc(3.745 * var(--k)) calc(5.618 * var(--k)) rgba(11, 136, 170, 0.19));
-
-  /* Sombras de texto del cierre */
-  --sombra-cierre: 0 calc(4.026 * var(--k)) 0 #064b98, 0 calc(6.542 * var(--k)) calc(7.549 * var(--k)) rgba(0, 59, 133, 0.63);
-  --sombra-subcierre: 0 calc(2.443 * var(--k)) 0 #0663a0;
-
-  /* Yoshi */
-  --sombra-yoshi: calc(-1 * var(--k)) calc(4 * var(--k)) calc(7.9 * var(--k)) rgba(0, 0, 0, 0.62);
 
   /* Curvas */
   /* Gentle = resorte masa 1, rigidez 100, amortiguación 15, muestreado a 1.022 s */
@@ -32,4 +22,15 @@
   --dur-gentle: 1022ms;
   --ease-out: cubic-bezier(0, 0, 0.58, 1);
   --dur-dissolve: 300ms;
+}
+
+/* Sombras en px de Figma: dependen de --k, así que se declaran donde --k existe
+   (en :root var(--k) no está definida y el token quedaría inválido). */
+.intro,
+.home {
+  --boton-sombra: drop-shadow(0 calc(3.745 * var(--k)) calc(5.618 * var(--k)) rgba(11, 136, 170, 0.19));
+  --sombra-cierre: 0 calc(4.026 * var(--k)) 0 #064b98, 0 calc(6.542 * var(--k)) calc(7.549 * var(--k)) rgba(0, 59, 133, 0.63);
+  --sombra-subcierre: 0 calc(2.443 * var(--k)) 0 #0663a0;
+  /* En Figma es una sombra de capa sobre un PNG con transparencia: sigue la silueta, no la caja */
+  --sombra-yoshi: drop-shadow(calc(-1 * var(--k)) calc(4 * var(--k)) calc(7.9 * var(--k)) rgba(0, 0, 0, 0.62));
 }

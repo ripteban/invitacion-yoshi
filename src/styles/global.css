@@ -79,6 +79,11 @@ picture > img {
   height: 100%;
 }
 
+/* Rellenos de imagen de Figma en modo "Fill": cover centrado */
+.cubrir > img {
+  object-fit: cover;
+}
+
 /* Fuentes de Figma */
 .lilita {
   font-family: 'Lilita One', sans-serif;

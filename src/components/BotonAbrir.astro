@@ -1,0 +1,47 @@
+---
+// Botón "Toca el churro para abrirlo" (nodo 22:143): píldora amarilla con flecha.
+// Centrado en el ancho del frame, como el auto-layout de Figma, por si el texto cambia de largo.
+import flecha from '../assets/svg/flecha.svg';
+import { evento } from '../data/evento';
+---
+
+<div class="fila abs" style="--x:0;--y:779.461;--w:412;--h:44.945">
+  <button class="boton montserrat" type="button" id="boton-abrir">
+    <span>{evento.boton}</span>
+    <img class="boton__flecha" src={flecha.src} alt="" width={flecha.width} height={flecha.height} />
+  </button>
+</div>
+
+<style>
+  .fila {
+    display: flex;
+    justify-content: center;
+  }
+  .boton {
+    display: flex;
+    gap: calc(12.36 * var(--k));
+    align-items: center;
+    justify-content: center;
+    min-height: calc(44.945 * var(--k));
+    padding: calc(6.592 * var(--k)) calc(20 * var(--k));
+    border: calc(0.936 * var(--k)) solid var(--boton-borde);
+    border-radius: calc(93.636 * var(--k));
+    background: var(--boton-degradado);
+    filter: var(--boton-sombra);
+    color: var(--navy);
+    font-size: calc(20.6 * var(--k));
+    line-height: calc(21.63 * var(--k));
+    text-align: center;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .boton:focus-visible {
+    outline: calc(3 * var(--k)) solid var(--navy);
+    outline-offset: calc(3 * var(--k));
+  }
+  .boton__flecha {
+    flex: none;
+    width: calc(16.319 * var(--k));
+    height: calc(20.02 * var(--k));
+  }
+</style>
