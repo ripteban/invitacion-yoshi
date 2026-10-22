@@ -1,0 +1,53 @@
+---
+// Video de fondo que reemplaza un relleno de Figma en su misma caja (object-fit: cover).
+// Va encima de la imagen de Figma, invisible hasta que de verdad se reproduce: mientras carga
+// (o si el navegador lo bloquea) se ve el diseño tal cual. Lo controla scripts/videos.ts.
+// Mientras no exista public/medios/<nombre>.mp4 no se renderiza nada.
+import { existsSync, readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+
+interface Props {
+  /** archivo en public/medios, sin extensión */
+  nombre: string;
+  /** 'intro' arranca de inmediato; los del Home, al abrir la invitación y al estar en pantalla */
+  fondo: 'intro' | 'home';
+  class?: string;
+  style?: string;
+}
+
+const { nombre, fondo, class: clase = 'llenar', style } = Astro.props;
+const archivo = `public/medios/${nombre}.mp4`;
+const hay = existsSync(archivo);
+// Versión según el contenido: si cambia el video, cambia la URL y nadie ve el anterior en caché
+const version = hay ? createHash('sha1').update(readFileSync(archivo)).digest('hex').slice(0, 8) : '';
+---
+
+{
+  hay && (
+    <video
+      class:list={['video-fondo', clase]}
+      style={style}
+      src={`/medios/${nombre}.mp4?v=${version}`}
+      data-fondo={fondo}
+      muted
+      loop
+      playsinline
+      disablepictureinpicture
+      disableremoteplayback
+      preload={fondo === 'intro' ? 'auto' : 'none'}
+      aria-hidden="true"
+    />
+  )
+}
+
+<style>
+  .video-fondo {
+    object-fit: cover;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 600ms var(--ease-out);
+  }
+  .video-fondo:global(.reproduciendo) {
+    opacity: 1;
+  }
+</style>

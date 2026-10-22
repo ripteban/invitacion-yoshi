@@ -12,6 +12,7 @@ import { gsap } from 'gsap';
 import { asomar, estallar, precargarChicharrones } from './chicharrones';
 import { iniciarMusica, mostrarBotonMusica } from './musica';
 import { iniciarRevelado } from './revelar';
+import { activarVideosHome } from './videos';
 
 const intro = document.getElementById('intro');
 const home = document.getElementById('home');
@@ -39,6 +40,7 @@ function mostrarHome() {
   window.scrollTo(0, 0);
   home.classList.add('visible');
   home.removeAttribute('inert');
+  activarVideosHome();
   gsap.to(intro, {
     opacity: 0,
     duration: T_DISOLVER,
