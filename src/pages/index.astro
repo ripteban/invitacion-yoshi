@@ -1,0 +1,77 @@
+---
+import '@fontsource/lilita-one/latin-400.css';
+import '@fontsource/montserrat/latin-900-italic.css';
+import '@fontsource/barlow-condensed/latin-600.css';
+import '../styles/tokens.css';
+import '../styles/global.css';
+import '../styles/animaciones.css';
+// La intro usa Lilita One y Montserrat Black Italic: se precargan para que no parpadeen
+import lilita400 from '@fontsource/lilita-one/files/lilita-one-latin-400-normal.woff2?url';
+import montserrat900i from '@fontsource/montserrat/files/montserrat-latin-900-italic.woff2?url';
+
+import Intro from '../components/Intro.astro';
+
+import { evento } from '../data/evento';
+
+const sitio = Astro.site ?? new URL(Astro.url.origin);
+const ogImagen = new URL('/og-image.jpg', sitio).href;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{evento.titulo}</title>
+    <meta name="description" content={evento.descripcion} />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#93E6F8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href={lilita400} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={montserrat900i} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={evento.titulo} />
+    <meta property="og:description" content={evento.descripcion} />
+    <meta property="og:image" content={ogImagen} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="es_SV" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <noscript>
+      <style>
+        .intro { display: none !important; }
+        .home { opacity: 1 !important; pointer-events: auto !important; }
+        body.bloqueado { overflow: auto !important; }
+      </style>
+    </noscript>
+  </head>
+  <body class="bloqueado">
+    <Intro />
+
+    <!-- Home (frame "2" de Figma, 412 × 2014). Las secciones llegan en la Fase 2. -->
+    <main class="home" id="home" inert tabindex="-1"></main>
+  </body>
+</html>
+
+<style>
+  .home {
+    --k: var(--u);
+    position: relative;
+    z-index: 20;
+    width: var(--ancho);
+    height: calc(2014 * var(--k));
+    margin: 0 auto;
+    background: var(--fondo-home);
+    overflow: clip;
+    opacity: 0;
+    pointer-events: none;
+    outline: none;
+  }
+  .home.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity var(--dur-dissolve) var(--ease-out);
+  }
+</style>
