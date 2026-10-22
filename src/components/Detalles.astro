@@ -1,0 +1,79 @@
+---
+// "Nos vemos aquí" (72:92) + lista Día / Hora / Lugar (72:94).
+// Columna con los gaps de Figma y texto real, editable en evento.ts.
+import Img from './Img.astro';
+import fecha from '../assets/iconos/fecha.png';
+import hora from '../assets/iconos/hora.png';
+import lugar from '../assets/iconos/lugar.png';
+import { evento } from '../data/evento';
+
+const filas = [
+  { icono: fecha, etiqueta: 'FECHA', valor: evento.fecha },
+  { icono: hora, etiqueta: 'HORA', valor: evento.hora },
+  { icono: lugar, etiqueta: 'LUGAR', valor: evento.lugar },
+];
+---
+
+<h2 class="encabezado lilita abs" style="--x:0;--y:1130.427;--w:412;--h:48">{evento.encabezadoDetalles}</h2>
+
+<dl class="lista abs" style="--x:43.584;--y:1216.216;--w:324.832;--h:347.908">
+  {
+    filas.map(({ icono, etiqueta, valor }) => (
+      <div class="fila">
+        <div class="fila__icono">
+          <Img src={icono} ancho={105} />
+        </div>
+        <div class="fila__texto">
+          <dt class="lilita">{etiqueta}</dt>
+          <dd class="barlow">{valor}</dd>
+        </div>
+      </div>
+    ))
+  }
+</dl>
+
+<style>
+  .encabezado {
+    margin: 0;
+    color: var(--navy);
+    font-size: calc(47.38 * var(--k));
+    line-height: calc(47.38 * var(--k));
+    letter-spacing: calc(-1.1845 * var(--k));
+    text-align: center;
+    white-space: nowrap;
+  }
+  .lista {
+    display: flex;
+    flex-direction: column;
+    gap: calc(16.454 * var(--k));
+    margin: 0;
+  }
+  .fila {
+    display: flex;
+    gap: calc(20.111 * var(--k));
+    align-items: center;
+    min-height: calc(76.329 * var(--k));
+  }
+  .fila__icono {
+    position: relative;
+    flex: none;
+    width: calc(105 * var(--k));
+    height: calc(105 * var(--k));
+  }
+  .fila__texto {
+    width: calc(199.721 * var(--k));
+    color: var(--navy);
+    white-space: nowrap;
+  }
+  dt {
+    font-size: calc(26.51 * var(--k));
+    line-height: calc(29.161 * var(--k));
+  }
+  dd {
+    height: calc(30.789 * var(--k));
+    margin: 0;
+    padding-top: calc(2.742 * var(--k));
+    font-size: calc(25.367 * var(--k));
+    line-height: calc(27.396 * var(--k));
+  }
+</style>

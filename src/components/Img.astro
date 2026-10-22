@@ -15,9 +15,11 @@ interface Props {
   eager?: boolean;
   /** 'home' escala con --u (ancho de la invitación); 'intro' escala con --ui (ancho y alto de pantalla) */
   escala?: 'home' | 'intro';
+  /** reemplaza el "sizes" calculado (p. ej. fondos que cubren toda la pantalla) */
+  sizes?: string;
 }
 
-const { src, ancho, alt = '', calidad = 80, class: clase = 'llenar', style, eager = false, escala = 'home' } = Astro.props;
+const { src, ancho, alt = '', calidad = 80, class: clase = 'llenar', style, eager = false, escala = 'home', sizes: sizesFijo } = Astro.props;
 
 const r = Math.round;
 // 1× … 4× del ancho de diseño, sin pasar del original
@@ -25,7 +27,7 @@ const anchos = [...new Set([1, 1.5, 2, 3, 4].map((m) => Math.min(src.width, r(an
 const vw = ((ancho / 412) * 100).toFixed(2);
 // Debe coincidir con --u y --ui de tokens.css (solo móvil; la Fase 5 agrega tablet y escritorio)
 const vh = ((ancho / 917) * 100).toFixed(2);
-const sizes = escala === 'intro' ? `min(${vw}vw, ${vh}vh)` : `${vw}vw`;
+const sizes = sizesFijo ?? (escala === 'intro' ? `min(${vw}vw, ${vh}vh)` : `${vw}vw`);
 const w = Math.min(src.width, r(ancho));
 const alto = r((src.height * w) / src.width);
 ---

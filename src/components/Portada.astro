@@ -1,0 +1,29 @@
+---
+// Portada del Home (grupo 71:151, recortado a 412 × 917.87): piscina, sombra del título
+// (68:139), título raster (71:147) y retrato (66:115). Yoshi va aparte porque en Figma está
+// por encima de la ola y los detalles.
+import Img from './Img.astro';
+import piscina from '../assets/home/portada.png';
+import titulo from '../assets/home/titulo.png';
+import retrato from '../assets/home/retrato.png';
+import resplandor from '../assets/svg/resplandor.svg';
+---
+
+<div class="portada abs" style="--x:0;--y:0;--w:412;--h:917.87">
+  <!-- 71:149 · relleno 1080 × 1920 en "cover" sobre 415.649 × 926: se ve de 520.9 px de diseño de ancho -->
+  <Img src={piscina} ancho={520.9} class="abs cubrir" calidad={90} sizes="126.43vw" style="--x:-1.825;--y:-4.065;--w:415.649;--h:926" eager />
+  <!-- 68:139 · elipse desenfocada (SVG 455.65 × 216.602) centrada en (217.52, 238.804), −8° -->
+  <img class="resplandor abs" src={resplandor.src} alt="" width={resplandor.width} height={resplandor.height} style="--x:-10.305;--y:130.503;--w:455.65;--h:216.602" />
+  <Img src={titulo} ancho={378.536} alt="Party Familiar con Yoshi" calidad={90} class="abs" style="--x:16.732;--y:153.947;--w:378.536;--h:198" eager />
+  <!-- El maestro ya trae el recorte de Figma (ver preparar-recursos.mjs) -->
+  <Img src={retrato} ancho={426.874} alt="" calidad={90} class="abs" style="--x:-7.437;--y:302.526;--w:426.874;--h:639" eager />
+</div>
+
+<style>
+  .portada {
+    overflow: clip;
+  }
+  .resplandor {
+    rotate: -8deg;
+  }
+</style>

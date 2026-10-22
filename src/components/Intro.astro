@@ -1,11 +1,36 @@
 ---
 // Intro (frame "1" de Figma, 412 × 917): bolsa por abrir.
-// El lienzo escala con --ui para caber completo en ancho y alto; el fondo cubre toda la pantalla.
-// El contenido (fondo, título, bolsa, mano y botón) llega en la Fase 2.
+// El lienzo escala con --ui para caber completo en ancho y alto; el fondo cubre toda la pantalla
+// (en 412 × 917 coincide exactamente con el relleno "cover" de Figma).
+import Img from './Img.astro';
+import Bolsa from './Bolsa.astro';
+import BotonAbrir from './BotonAbrir.astro';
+import fondo from '../assets/intro/fondo.png';
+import titulo from '../assets/intro/titulo.png';
+import { evento } from '../data/evento';
 ---
 
 <section class="intro" id="intro" aria-label="Abrir la invitación">
-  <div class="intro__lienzo"></div>
+  <!-- 15:86 · relleno 1080 × 1920 en "cover": se ve de 515.8 px de diseño de ancho en 412 × 917 -->
+  <Img src={fondo} ancho={515.8} class="llenar cubrir" calidad={90} sizes="max(100vw, 56.25vh)" eager />
+
+  <div class="intro__lienzo">
+    <!-- 74:274 · título raster -->
+    <Img src={titulo} ancho={283.771} alt="¡Se armó la fiesta!" escala="intro" calidad={90} class="abs" style="--x:64.115;--y:67;--w:283.771;--h:148.431" eager />
+
+    <!-- 22:111 y 22:112 · rayitas amarillas (centradas en la caja que reporta Figma) -->
+    <span class="rayita abs" style="--x:15.467;--y:141.986;--w:9.364;--h:27.155;rotate:-55deg"></span>
+    <span class="rayita abs" style="--x:385.294;--y:95.717;--w:9.364;--h:27.155;rotate:34deg"></span>
+
+    <!-- 22:110 · instrucción, rotada −2° -->
+    <p class="instruccion lilita abs" style="--x:19.16;--y:224.088;--w:373.609;--h:55.245">
+      <span>{evento.instruccion[0]}</span>
+      <span>{evento.instruccion[1]}</span>
+    </p>
+
+    <Bolsa />
+    <BotonAbrir />
+  </div>
 </section>
 
 <style>
@@ -23,5 +48,21 @@
     position: relative;
     width: calc(412 * var(--k));
     height: calc(917 * var(--k));
+  }
+  .rayita {
+    background: var(--sol);
+    border-radius: calc(11.162 * var(--k)) calc(11.162 * var(--k)) calc(6.378 * var(--k)) calc(6.378 * var(--k));
+  }
+  .instruccion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    rotate: -2deg;
+    color: var(--navy);
+    font-size: calc(28.84 * var(--k));
+    line-height: calc(27.398 * var(--k));
+    text-align: center;
+    white-space: nowrap;
   }
 </style>
