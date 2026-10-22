@@ -1,0 +1,27 @@
+---
+// Intro (frame "1" de Figma, 412 × 917): bolsa por abrir.
+// El lienzo escala con --ui para caber completo en ancho y alto; el fondo cubre toda la pantalla.
+// El contenido (fondo, título, bolsa, mano y botón) llega en la Fase 2.
+---
+
+<section class="intro" id="intro" aria-label="Abrir la invitación">
+  <div class="intro__lienzo"></div>
+</section>
+
+<style>
+  .intro {
+    --k: var(--ui);
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: grid;
+    place-items: center;
+    background: var(--fondo-intro);
+    overflow: hidden;
+  }
+  .intro__lienzo {
+    position: relative;
+    width: calc(412 * var(--k));
+    height: calc(917 * var(--k));
+  }
+</style>

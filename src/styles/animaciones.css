@@ -1,0 +1,65 @@
+/* Microanimaciones: movimientos lentos y pequeños para dar vida sin distraer.
+   Se usan las propiedades individuales translate / rotate / scale, que no chocan con el
+   transform que aplica GSAP en la apertura de la bolsa ni con las rotaciones de Figma.
+   Cada elemento puede ajustar --dur, --retraso, --giro, --escala y --origen.
+   --vel acelera o frena todas a la vez (0.5 = doble de velocidad).
+   Las animaciones propias de cada pieza llegan en la Fase 3. */
+
+:root {
+  --vel: 1;
+}
+
+@keyframes flotar {
+  0%,
+  100% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+  50% {
+    translate: 0 calc(-4 * var(--k));
+    rotate: var(--giro, 1.5deg);
+  }
+}
+
+@keyframes mecer {
+  0%,
+  100% {
+    rotate: calc(var(--giro, 2deg) * -1);
+  }
+  50% {
+    rotate: var(--giro, 2deg);
+  }
+}
+
+@keyframes respirar {
+  0%,
+  100% {
+    scale: 1;
+  }
+  50% {
+    scale: var(--escala, 1.025);
+  }
+}
+
+.anim-flotar {
+  transform-origin: var(--origen, 50% 50%);
+  animation: flotar calc(var(--dur, 3.2s) * var(--vel)) ease-in-out calc(var(--retraso, 0s) * var(--vel)) infinite;
+}
+
+.anim-mecer {
+  transform-origin: var(--origen, 50% 50%);
+  animation: mecer calc(var(--dur, 2.4s) * var(--vel)) ease-in-out calc(var(--retraso, 0s) * var(--vel)) infinite;
+}
+
+.anim-respirar {
+  transform-origin: var(--origen, 50% 50%);
+  animation: respirar calc(var(--dur, 3s) * var(--vel)) ease-in-out calc(var(--retraso, 0s) * var(--vel)) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-flotar,
+  .anim-mecer,
+  .anim-respirar {
+    animation: none !important;
+  }
+}

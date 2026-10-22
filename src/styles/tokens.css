@@ -1,0 +1,35 @@
+:root {
+  /* Escala 1:1 con Figma: todo valor de diseño (px a 412 de ancho) se multiplica por --u.
+     --ancho es el ancho de la invitación. Por ahora solo móvil: tablet y escritorio llegan en la Fase 5. */
+  --ancho: 100vw;
+  --u: calc(var(--ancho) / 412);
+  /* Intro (frame de 412 × 917): cabe completa en ancho y en alto, incluso en iPhone SE */
+  --ui: min(calc(100vw / 412), calc(100svh / 917));
+
+  /* Colores (variables de Figma) */
+  --fondo-intro: #93e6f8;
+  --fondo-home: #cdf7fd;
+  --navy: #062652; /* --color-navy */
+  --blanco: #ffffff; /* --color-white */
+  --sol: #ffe52c; /* --color-sunshine: rayitas amarillas */
+
+  /* Botón "Toca el churro" (píldora) */
+  --boton-degradado: linear-gradient(to bottom, #fff349, #ffe329);
+  --boton-borde: #fff5aa;
+  --boton-sombra: drop-shadow(0 calc(3.745 * var(--k)) calc(5.618 * var(--k)) rgba(11, 136, 170, 0.19));
+
+  /* Sombras de texto del cierre */
+  --sombra-cierre: 0 calc(4.026 * var(--k)) 0 #064b98, 0 calc(6.542 * var(--k)) calc(7.549 * var(--k)) rgba(0, 59, 133, 0.63);
+  --sombra-subcierre: 0 calc(2.443 * var(--k)) 0 #0663a0;
+
+  /* Yoshi */
+  --sombra-yoshi: calc(-1 * var(--k)) calc(4 * var(--k)) calc(7.9 * var(--k)) rgba(0, 0, 0, 0.62);
+
+  /* Curvas */
+  /* Gentle = resorte masa 1, rigidez 100, amortiguación 15, muestreado a 1.022 s */
+  --ease-gentle: linear(0, 0.101, 0.308, 0.528, 0.714, 0.852, 0.942, 0.995, 1.02, 1.028,
+    1.027, 1.021, 1.015, 1.01, 1.005, 1.002, 1, 1, 0.999, 0.999, 1);
+  --dur-gentle: 1022ms;
+  --ease-out: cubic-bezier(0, 0, 0.58, 1);
+  --dur-dissolve: 300ms;
+}
