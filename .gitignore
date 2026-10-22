@@ -1,0 +1,21 @@
+# Dependencias y builds
+node_modules/
+dist/
+.astro/
+
+# Descargas de Figma (las URLs de MCP caducan; los maestros salen de aquí)
+figma-export/
+
+# Archivos originales que entrega el usuario (los maestros procesados van a src/assets y public/medios)
+entrada/
+
+# Salidas de QA generadas (las referencias de Figma sí se versionan)
+qa/capturas/
+qa/diferencias/
+
+# Sistema y editor
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.*
