@@ -45,4 +45,13 @@ const chicharrones = await Promise.all(
   .mano {
     pointer-events: none;
   }
+  /* Con mouse: la bolsa se acerca al pasar el cursor */
+  @media (hover: hover) and (pointer: fine) {
+    .bolsa {
+      transition: scale 400ms var(--ease-gentle);
+    }
+    .bolsa:hover:not(:disabled) {
+      scale: 1.04;
+    }
+  }
 </style>

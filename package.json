@@ -11,6 +11,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "recursos": "node scripts/preparar-recursos.mjs",
+    "calibrar": "node scripts/calibrar-videos.mjs",
     "og": "node scripts/generar-og.mjs",
     "qa": "node scripts/qa-capturas.mjs && node scripts/qa-tamanos.mjs && node scripts/qa-animaciones.mjs",
     "qa:peso": "node scripts/qa-peso.mjs",

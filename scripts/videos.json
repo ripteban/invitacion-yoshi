@@ -1,0 +1,66 @@
+{
+  "objetivoVmaf": 92,
+  "muestra": "1–5 s",
+  "videos": {
+    "fondo-intro": {
+      "av1": {
+        "crf": 33,
+        "vmaf": 92.08,
+        "kbps": 5823,
+        "telefono": 99.95
+      },
+      "hevc": {
+        "crf": 27,
+        "vmaf": 92.22,
+        "kbps": 7116,
+        "telefono": 99.97
+      },
+      "h264": {
+        "crf": 25,
+        "vmaf": 92.63,
+        "kbps": 10464,
+        "telefono": 99.98
+      }
+    },
+    "fondo-portada": {
+      "av1": {
+        "crf": 43,
+        "vmaf": 92.38,
+        "kbps": 1640,
+        "telefono": 99.98
+      },
+      "hevc": {
+        "crf": 29,
+        "vmaf": 92.8,
+        "kbps": 2040,
+        "telefono": 100
+      },
+      "h264": {
+        "crf": 26,
+        "vmaf": 93.23,
+        "kbps": 3582,
+        "telefono": 100
+      }
+    },
+    "fondo-cierre": {
+      "av1": {
+        "crf": 39,
+        "vmaf": 92.21,
+        "kbps": 1484,
+        "telefono": 99.94
+      },
+      "hevc": {
+        "crf": 29,
+        "vmaf": 92.32,
+        "kbps": 1752,
+        "telefono": 99.98
+      },
+      "h264": {
+        "crf": 26,
+        "vmaf": 92.08,
+        "kbps": 3037,
+        "telefono": 99.95
+      }
+    }
+  }
+}

@@ -7,7 +7,8 @@ El plan completo está en `PLAN.md` y el inventario de recursos de Figma en `REC
 
 - **Fidelidad 1:1 con Figma** (`Jwd5F7ykAxQtFDWMCu96sw`, frames `15:85` Intro y `22:180` Home). Todo valor en px de Figma
   se escribe como `calc(N * var(--k))`: `--k` es `--u` en el Home y `--ui` en la Intro (ver `src/styles/tokens.css`).
-- Móvil primero. Tablet y escritorio son la Fase 5.
+- Móvil = Figma 1:1. Tablet y escritorio: tarjeta centrada sobre el video de la piscina (breakpoints en `tokens.css`, como Katalina).
+- Videos: 1080p en AV1, HEVC y H.264 con CRF calibrado por VMAF (`npm run calibrar`, luego `npm run recursos`).
 - Textos editables solo en `src/data/evento.ts`.
 - Animaciones: solo `transform`/`opacity`, con `translate`/`rotate`/`scale` sueltos. GSAP solo para la apertura de la bolsa.
 - Los recursos maestros (`src/assets/`) salen de `npm run recursos` (`scripts/preparar-recursos.mjs`), nunca a mano.
