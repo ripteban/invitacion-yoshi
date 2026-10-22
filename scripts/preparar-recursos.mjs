@@ -6,8 +6,10 @@
 // Uso: node scripts/preparar-recursos.mjs
 import sharp from 'sharp';
 import { optimize } from 'svgo';
-import { existsSync } from 'node:fs';
-import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { existsSync, statSync } from 'node:fs';
+import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 
 const FIGMA = 'figma-export/originales';
@@ -108,4 +110,37 @@ if (existsSync(DIR_CHICHARRONES)) {
   for (const f of piezas) await recortarAlfa(join(DIR_CHICHARRONES, f), `chicharrones/${f}`);
 }
 
-// Videos y música se agregan aquí cuando lleguen a entrada/.
+// ---------- Videos de fondo (public/medios, servidos por functions/medios con rangos para iPhone) ----------
+// Cada video reemplaza el relleno de Figma de su frame y su primer cuadro es esa misma imagen.
+// Bucle sin corte: los últimos 0.75 s se funden con los primeros 0.75 s (el video dura eso menos).
+// 720 × 1280, H.264 sin audio, a 2 pasadas para quedar en ~2.8 MB (el agua comprime mal a calidad fija).
+const VIDEOS = [
+  ['Video de Entrada.mp4', 'fondo-intro.mp4'],
+  ['Video Inicial.mp4', 'fondo-portada.mp4'],
+  ['Video final.mp4', 'fondo-cierre.mp4'],
+];
+const FUNDIDO = 0.75;
+const PESO = 2.8 * 1024 * 1024 * 8; // bits
+const ffmpeg = (args) => execFileSync('ffmpeg', ['-y', '-v', 'error', ...args]);
+await mkdir('public/medios', { recursive: true });
+for (const [origen, destino] of VIDEOS) {
+  const src = join(IN, origen);
+  if (!existsSync(src)) continue;
+  const dur = Number(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', src]).toString());
+  const largo = dur - FUNDIDO;
+  const kbps = Math.floor(PESO / largo / 1000);
+  const filtro =
+    `[0:v]split[a][b];` +
+    `[a]trim=${FUNDIDO}:${dur},setpts=PTS-STARTPTS,fps=24[cuerpo];` +
+    `[b]trim=0:${FUNDIDO},setpts=PTS-STARTPTS,fps=24[cabeza];` +
+    `[cuerpo][cabeza]xfade=transition=fade:duration=${FUNDIDO}:offset=${largo - FUNDIDO},` +
+    `scale=720:1280:flags=lanczos,format=yuv420p[v]`;
+  const log = join(tmpdir(), `yoshi-${destino}`);
+  const comun = ['-i', src, '-filter_complex', filtro, '-map', '[v]', '-an', '-c:v', 'libx264', '-profile:v', 'high', '-preset', 'slow', '-g', '48', '-b:v', `${kbps}k`, '-passlogfile', log];
+  ffmpeg([...comun, '-pass', '1', '-f', 'mp4', process.platform === 'win32' ? 'NUL' : '/dev/null']);
+  ffmpeg([...comun, '-pass', '2', '-movflags', '+faststart', join('public/medios', destino)]);
+  for (const f of await readdir(tmpdir())) if (f.startsWith(`yoshi-${destino}`)) await rm(join(tmpdir(), f));
+  console.log('video', `public/medios/${destino}`.padEnd(30), `${(statSync(join('public/medios', destino)).size / 1048576).toFixed(2)} MB`, `${largo.toFixed(2)} s`, '←', src);
+}
+
+// La música se agrega aquí cuando llegue a entrada/.

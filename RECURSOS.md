@@ -62,10 +62,22 @@ Solo se ve el 67.4 % central del ancho del original, y por eso su densidad efect
 | `intro@1x.png` / `intro@2x.png` | 412 × 917 / 824 × 1834 |
 | `home@1x.png` / `home@2x.png` | 412 × 2014 / 824 × 4028 |
 
-## Falta (lo entrega el usuario)
+## Entregados por el usuario (`entrada/`)
 
-1. **Retrato original** sin recortar, en la máxima resolución (≥ 1900 px de ancho para llegar a 3×). Bloquea la fidelidad de la portada.
-2. *(Opcional)* Fondos en mayor resolución (≥ 1600 × 2800). Si no hay, los de 1080 × 1920 sirven y los videos pueden reemplazarlos.
-3. Chicharrones en PNG (sección 4.2 del plan). Bloquea la Fase 3C.
-4. Videos (4.3) y música (4.4).
-5. URL de Cloudflare Pages y texto de la vista previa de WhatsApp (4.5).
+| Archivo | Uso | Resultado |
+|---|---|---|
+| `chicharrones/chicharron-1…6.png` (1000 × 1000) | Apertura de la bolsa | Recortados al alfa → WebP de 400 px (18–33 KB) |
+| `Video de Entrada.mp4` (1080 × 1920, 8 s) | Fondo de la intro (`15:86`) | `public/medios/fondo-intro.mp4`, 720 × 1280, 7.25 s, 2.90 MB |
+| `Video Inicial.mp4` (1080 × 1920, 10 s) | Fondo de la portada (`71:149`) | `public/medios/fondo-portada.mp4`, 9.25 s, 2.76 MB |
+| `Video final.mp4` (1080 × 1920, 10 s) | Fondo del cierre (`72:86`) | `public/medios/fondo-cierre.mp4`, 9.25 s, 2.80 MB |
+| `Retrato.png` (1024 × 1536) | Retrato | Es la misma imagen que la de Figma (diferencia 0.16): sigue en 1.62× |
+
+El primer cuadro de cada video coincide con su relleno de Figma (diferencia 1.1 sobre 255).
+Para que el bucle no tenga corte, los últimos 0.75 s se funden con los primeros: al repetirse, el salto
+(10.1) queda casi igual que entre dos cuadros seguidos (8.0).
+
+## Falta
+
+1. **Retrato en mayor resolución** (≥ 1900 px de ancho para llegar a 3×).
+2. **Música** (4.4).
+3. URL de Cloudflare Pages y texto de la vista previa de WhatsApp (4.5).

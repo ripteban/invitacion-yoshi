@@ -14,7 +14,11 @@ const page = await browser.newPage({ viewport: { width: 412, height: 917 }, devi
 await page.goto(URL, { waitUntil: 'networkidle' });
 // Diseño estático: sin animaciones ni transiciones, y todo lo que se revela al hacer scroll, visible
 await page.addStyleTag({ content: '*, *::before, *::after { animation: none !important; transition: none !important; }' });
-await page.evaluate(() => document.querySelectorAll('[data-revelar]').forEach((el) => el.classList.add('revelado')));
+await page.evaluate(() => {
+  document.querySelectorAll('[data-revelar]').forEach((el) => el.classList.add('revelado'));
+  // Los videos de fondo se quitan: se compara contra las imágenes fijas de Figma
+  document.querySelectorAll('video').forEach((v) => v.remove());
+});
 
 async function esperarImagenes() {
   await page.evaluate(async () => {

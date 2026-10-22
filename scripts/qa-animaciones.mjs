@@ -1,6 +1,6 @@
 // QA de animaciones a 412 × 917 con la CPU 4× más lenta (gama media):
 // abre la bolsa, mide los cuadros de la apertura, baja hasta el final y revisa que todo se revele,
-// que no haya saltos de layout ni errores en consola. Repite con movimiento reducido y con el botón.
+// que los videos de fondo suenen solo cuando toca, y que no haya saltos de layout ni errores en consola. Repite con movimiento reducido y con el botón.
 // Graba un video demo en qa/capturas/video/.
 // Uso: node scripts/qa-animaciones.mjs [url]   (por defecto http://localhost:4321)
 import { chromium } from 'playwright';
@@ -33,6 +33,14 @@ async function probar(nombre, { reducido = false, selector = '.bolsa', video = f
     new PerformanceObserver((l) => l.getEntries().forEach((e) => !e.hadRecentInput && (window.__cls += e.value))).observe({ type: 'layout-shift', buffered: true });
   });
   await page.waitForTimeout(1800); // animaciones en espera
+  // Videos: { fondo: reproduciéndose } (solo los que existan en public/medios)
+  const videos = () =>
+    page.evaluate(() => Object.fromEntries([...document.querySelectorAll('video[data-fondo]')].map((v) => [v.src.match(/fondo-(\w+)/)[1], !v.paused])));
+  const revisarVideos = (momento, esperado) =>
+    videos().then((v) => {
+      for (const [k, debe] of Object.entries(esperado)) if (k in v && v[k] !== debe) fallas.push(`${nombre}: video ${k} ${debe ? 'detenido' : 'sonando'} ${momento}`);
+    });
+  await revisarVideos('antes de abrir', { intro: !reducido, portada: false, cierre: false });
 
   // Cuadros durante la apertura
   await page.evaluate(() => {
@@ -60,13 +68,16 @@ async function probar(nombre, { reducido = false, selector = '.bolsa', video = f
   const lentos = c.filter((d) => d > 1000 / 30).length;
   const fps = c.length ? 1000 / (c.reduce((a, b) => a + b, 0) / c.length) : 0;
 
-  // Scroll hasta el final, como un usuario
   await page.waitForTimeout(800);
+  await revisarVideos('al abrir', { portada: !reducido, cierre: false });
+
+  // Scroll hasta el final, como un usuario
   for (let i = 0; i < 24; i++) {
     await page.mouse.wheel(0, 120);
     await page.waitForTimeout(120);
   }
   await page.waitForTimeout(1500);
+  await revisarVideos('al final', { cierre: !reducido }); // la portada sigue dentro del margen de precarga
   const sinRevelar = await page.evaluate(() => [...document.querySelectorAll('[data-revelar]:not(.revelado)')].map((e) => e.className));
   if (sinRevelar.length) fallas.push(`${nombre}: sin revelar ${sinRevelar.join(', ')}`);
   const cls = await page.evaluate(() => window.__cls);
