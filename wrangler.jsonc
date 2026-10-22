@@ -1,0 +1,8 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "invitacion-yoshi",
+  "compatibility_date": "2026-10-22",
+  "assets": {
+    "directory": "./dist"
+  }
+}

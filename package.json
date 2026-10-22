@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "deploy": "astro build && wrangler deploy",
     "preview": "astro preview",
     "astro": "astro",
     "recursos": "node scripts/preparar-recursos.mjs",
@@ -28,6 +29,7 @@
   "devDependencies": {
     "playwright": "^1.63.0",
     "sharp": "^0.35.5",
-    "svgo": "^4.1.0"
+    "svgo": "^4.1.0",
+    "wrangler": "^4.152.0"
   }
 }
