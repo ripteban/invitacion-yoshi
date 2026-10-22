@@ -1,6 +1,7 @@
 ---
 // "Nos vemos aquí" (72:92) + lista Día / Hora / Lugar (72:94).
-// Columna con los gaps de Figma y texto real, editable en evento.ts.
+// Columna con los gaps de Figma y texto real, editable en evento.ts. Como en Figma, la lista mide lo
+// que su fila más ancha y va centrada en el frame: si cambia un texto, se vuelve a centrar sola.
 import Img from './Img.astro';
 import fecha from '../assets/iconos/fecha.png';
 import hora from '../assets/iconos/hora.png';
@@ -16,12 +17,12 @@ const filas = [
 
 <h2 class="encabezado lilita abs" style="--x:0;--y:1130.427;--w:412;--h:48;--z:4" data-revelar>{evento.encabezadoDetalles}</h2>
 
-<dl class="lista abs" style="--x:43.584;--y:1216.216;--w:324.832;--h:347.908;--z:4">
+<dl class="lista abs" style="--x:206;--y:1216.216;--h:287;--z:4">
   {
     filas.map(({ icono, etiqueta, valor }, i) => (
       <div class="fila" style={`--i:${i}`} data-revelar>
         <div class="fila__icono">
-          <Img src={icono} ancho={105} />
+          <Img src={icono} ancho={77.806} />
         </div>
         <div class="fila__texto">
           <dt class="lilita">{etiqueta}</dt>
@@ -45,36 +46,37 @@ const filas = [
   .lista {
     display: flex;
     flex-direction: column;
-    gap: calc(16.454 * var(--k));
+    gap: calc(18.031 * var(--k));
+    width: max-content; /* en Figma 345.844 con "Viernes 20 de Noviembre" */
+    translate: -50% 0;
     margin: 0;
   }
   .fila {
     display: flex;
-    gap: calc(20.111 * var(--k));
+    gap: calc(22.038 * var(--k));
     align-items: center;
-    min-height: calc(76.329 * var(--k));
+    min-height: calc(83.646 * var(--k));
   }
   .fila__icono {
     position: relative;
     flex: none;
-    width: calc(105 * var(--k));
-    height: calc(105 * var(--k));
+    width: calc(77.806 * var(--k));
+    height: calc(77.806 * var(--k));
   }
   .fila__texto {
-    width: calc(199.721 * var(--k));
     color: var(--navy);
     white-space: nowrap;
   }
   dt {
-    font-size: calc(26.51 * var(--k));
-    line-height: calc(29.161 * var(--k));
+    font-size: calc(29.051 * var(--k));
+    line-height: calc(31.956 * var(--k));
   }
   dd {
-    height: calc(30.789 * var(--k));
+    height: calc(33.741 * var(--k));
     margin: 0;
-    padding-top: calc(2.742 * var(--k));
-    font-size: calc(25.367 * var(--k));
-    line-height: calc(27.396 * var(--k));
+    padding-top: calc(3.005 * var(--k));
+    font-size: calc(27.798 * var(--k));
+    line-height: calc(30.022 * var(--k));
   }
 
   /* Al revelarse: el encabezado sube y aparece; las filas entran escalonadas cada 120 ms,
