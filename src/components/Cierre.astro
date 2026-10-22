@@ -10,11 +10,11 @@ import { evento } from '../data/evento';
   <!-- relleno 1080 × 1920 en "cover" sobre 412 × 759: se ve de 426.94 px de diseño de ancho -->
   <Img src={agua} ancho={426.94} class="abs cubrir" calidad={90} sizes="103.63vw" style="--x:0;--y:1254.67;--w:412;--h:759" />
 
-  <h2 class="titulo lilita abs" style="--x:27.32;--y:1701.65;--w:357.955;--h:141.254">
+  <h2 class="titulo lilita abs" style="--x:27.32;--y:1701.65;--w:357.955;--h:141.254" data-revelar>
     <span>{evento.cierre[0]}</span>
     <span>{evento.cierre[1]}</span>
   </h2>
-  <p class="subtitulo lilita abs" style="--x:0.2;--y:1858.34;--w:412;--h:29.064">{evento.subcierre}</p>
+  <p class="subtitulo lilita abs" style="--x:0.2;--y:1858.34;--w:412;--h:29.064" data-revelar>{evento.subcierre}</p>
 </section>
 
 <style>
@@ -44,5 +44,25 @@ import { evento } from '../data/evento';
     text-align: center;
     text-shadow: var(--sombra-subcierre);
     white-space: nowrap;
+  }
+
+  /* Al revelarse: el título aparece tambaleándose alrededor de sus −3° y luego late muy leve;
+     el subtítulo entra 150 ms después */
+  .titulo:global(.revelado) {
+    --base: -3deg;
+    --escala: 1.02;
+    animation:
+      tambalear 900ms var(--ease-out) both,
+      respirar 2.4s ease-in-out 900ms infinite;
+  }
+  .subtitulo:global(.revelado) {
+    --subir: 14;
+    animation: aparecer-subiendo 600ms var(--ease-out) 150ms both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .titulo:global(.revelado),
+    .subtitulo:global(.revelado) {
+      animation: encender 400ms var(--ease-out) both;
+    }
   }
 </style>

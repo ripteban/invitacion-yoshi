@@ -6,9 +6,9 @@ import { evento } from '../data/evento';
 ---
 
 <div class="fila abs" style="--x:0;--y:779.461;--w:412;--h:44.945">
-  <button class="boton montserrat" type="button" id="boton-abrir">
+  <button class="boton montserrat anim-respirar" type="button" id="boton-abrir" style="--escala:1.03;--dur:1.8s">
     <span>{evento.boton}</span>
-    <img class="boton__flecha" src={flecha.src} alt="" width={flecha.width} height={flecha.height} />
+    <img class="boton__flecha anim-flotar-suave" style="--alto:1.5;--dur:1.2s" src={flecha.src} alt="" width={flecha.width} height={flecha.height} />
   </button>
 </div>
 

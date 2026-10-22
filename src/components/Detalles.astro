@@ -14,12 +14,12 @@ const filas = [
 ];
 ---
 
-<h2 class="encabezado lilita abs" style="--x:0;--y:1130.427;--w:412;--h:48">{evento.encabezadoDetalles}</h2>
+<h2 class="encabezado lilita abs" style="--x:0;--y:1130.427;--w:412;--h:48" data-revelar>{evento.encabezadoDetalles}</h2>
 
 <dl class="lista abs" style="--x:43.584;--y:1216.216;--w:324.832;--h:347.908">
   {
-    filas.map(({ icono, etiqueta, valor }) => (
-      <div class="fila">
+    filas.map(({ icono, etiqueta, valor }, i) => (
+      <div class="fila" style={`--i:${i}`} data-revelar>
         <div class="fila__icono">
           <Img src={icono} ancho={105} />
         </div>
@@ -75,5 +75,33 @@ const filas = [
     padding-top: calc(2.742 * var(--k));
     font-size: calc(25.367 * var(--k));
     line-height: calc(27.396 * var(--k));
+  }
+
+  /* Al revelarse: el encabezado sube y aparece; las filas entran escalonadas cada 120 ms,
+     el ícono hace "pop" con resorte y después se mece, desfasado de los demás */
+  .encabezado:global(.revelado) {
+    --subir: 16;
+    animation: aparecer-subiendo 600ms var(--ease-out) both;
+  }
+  .fila:global(.revelado) {
+    --subir: 18;
+    --retraso-fila: calc(var(--i) * 120ms);
+    animation: aparecer-subiendo 600ms var(--ease-out) var(--retraso-fila) both;
+  }
+  .fila:global(.revelado) .fila__icono {
+    --desde: 0.8;
+    --giro: 2deg;
+    animation:
+      entrar-escala var(--dur-gentle) var(--ease-gentle) var(--retraso-fila) both,
+      mecer 2.6s ease-in-out calc(var(--retraso-fila) + var(--dur-gentle) - var(--i) * 0.7s) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .encabezado:global(.revelado),
+    .fila:global(.revelado) {
+      animation: encender 400ms var(--ease-out) both;
+    }
+    .fila:global(.revelado) .fila__icono {
+      animation: none;
+    }
   }
 </style>

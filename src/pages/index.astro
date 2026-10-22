@@ -14,6 +14,7 @@ import Portada from '../components/Portada.astro';
 import Detalles from '../components/Detalles.astro';
 import Cierre from '../components/Cierre.astro';
 import Img from '../components/Img.astro';
+import Musica from '../components/Musica.astro';
 
 import ola from '../assets/svg/ola.svg';
 import yoshi from '../assets/home/yoshi.png';
@@ -35,6 +36,8 @@ const ogImagen = new URL('/og-image.jpg', sitio).href;
     <meta name="robots" content="noindex, nofollow" />
     <meta name="theme-color" content="#93E6F8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Con JavaScript, lo que se revela al hacer scroll empieza oculto (ver animaciones.css) -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
     <link rel="preload" href={lilita400} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={montserrat900i} as="font" type="font/woff2" crossorigin />
 
@@ -69,8 +72,16 @@ const ogImagen = new URL('/og-image.jpg', sitio).href;
       <!-- 74:280 · Yoshi, con sombra que sigue su silueta -->
       <Img src={yoshi} ancho={82.514} alt="" class="abs yoshi" style="--x:85.566;--y:380.065;--w:82.514;--h:120.103" eager />
       <!-- 77:304 · banner raster -->
-      <Img src={banner} ancho={381.685} alt="Familia, risas y ganas de pasarla bien. ¡Estás invitado!" calidad={90} class="abs" style="--x:15.157;--y:923;--w:381.685;--h:169.638" />
+      <div class="banner abs" style="--x:15.157;--y:923;--w:381.685;--h:169.638" data-revelar>
+        <Img src={banner} ancho={381.685} alt="Familia, risas y ganas de pasarla bien. ¡Estás invitado!" calidad={90} />
+      </div>
     </main>
+
+    <Musica />
+
+    <script>
+      import '../scripts/intro';
+    </script>
   </body>
 </html>
 
@@ -90,6 +101,26 @@ const ogImagen = new URL('/og-image.jpg', sitio).href;
   }
   .home :global(.yoshi) {
     filter: var(--sombra-yoshi);
+    transform-origin: 50% 100%; /* se mece desde los pies */
+  }
+  /* Entrada: Yoshi salta con rebote y después se balancea ±4° */
+  .home.visible :global(.yoshi) {
+    --giro: 4deg;
+    animation:
+      saltar 800ms var(--ease-out) 200ms both,
+      mecer 2.4s ease-in-out 1s infinite;
+  }
+  /* Banner: sube 24 px y aparece con el rebote leve del resorte */
+  .banner:global(.revelado) {
+    animation: aparecer-subiendo var(--dur-gentle) var(--ease-gentle) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .home.visible :global(.yoshi) {
+      animation: none;
+    }
+    .banner:global(.revelado) {
+      animation: encender 400ms var(--ease-out) both;
+    }
   }
   .home.visible {
     opacity: 1;

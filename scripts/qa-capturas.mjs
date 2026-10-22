@@ -12,6 +12,9 @@ await mkdir(OUT, { recursive: true });
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 412, height: 917 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
 await page.goto(URL, { waitUntil: 'networkidle' });
+// Diseño estático: sin animaciones ni transiciones, y todo lo que se revela al hacer scroll, visible
+await page.addStyleTag({ content: '*, *::before, *::after { animation: none !important; transition: none !important; }' });
+await page.evaluate(() => document.querySelectorAll('[data-revelar]').forEach((el) => el.classList.add('revelado')));
 
 async function esperarImagenes() {
   await page.evaluate(async () => {

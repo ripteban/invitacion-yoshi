@@ -1,19 +1,22 @@
 /* Microanimaciones: movimientos lentos y pequeños para dar vida sin distraer.
    Se usan las propiedades individuales translate / rotate / scale, que no chocan con el
-   transform que aplica GSAP en la apertura de la bolsa ni con las rotaciones de Figma.
-   Cada elemento puede ajustar --dur, --retraso, --giro, --escala y --origen.
-   --vel acelera o frena todas a la vez (0.5 = doble de velocidad).
-   Las animaciones propias de cada pieza llegan en la Fase 3. */
+   transform que aplica GSAP en la apertura de la bolsa ni con las rotaciones de Figma
+   (por eso las que giran algo ya rotado reciben su ángulo base en --base).
+   Cada elemento puede ajustar --dur, --retraso, --giro, --escala, --desde y --origen.
+   --vel acelera o frena todas a la vez (0.5 = doble de velocidad). */
 
 :root {
   --vel: 1;
 }
 
+/* ---------- En espera (bucles) ---------- */
+
+/* Sube y baja ±4 px con un balanceo leve */
 @keyframes flotar {
   0%,
   100% {
-    translate: 0 0;
-    rotate: 0deg;
+    translate: 0 calc(4 * var(--k));
+    rotate: calc(var(--giro, 1.5deg) * -1);
   }
   50% {
     translate: 0 calc(-4 * var(--k));
@@ -21,13 +24,24 @@
   }
 }
 
+/* Solo sube y baja (±3 px por defecto) */
+@keyframes flotar-suave {
+  0%,
+  100% {
+    translate: 0 calc(var(--alto, 3) * var(--k));
+  }
+  50% {
+    translate: 0 calc(var(--alto, 3) * -1 * var(--k));
+  }
+}
+
 @keyframes mecer {
   0%,
   100% {
-    rotate: calc(var(--giro, 2deg) * -1);
+    rotate: calc(var(--base, 0deg) - var(--giro, 2deg));
   }
   50% {
-    rotate: var(--giro, 2deg);
+    rotate: calc(var(--base, 0deg) + var(--giro, 2deg));
   }
 }
 
@@ -41,9 +55,127 @@
   }
 }
 
+/* La mano "presiona" la bolsa: invita a tocar */
+@keyframes tocar {
+  0%,
+  55%,
+  100% {
+    scale: 1;
+    translate: 0 0;
+  }
+  68% {
+    scale: 0.9;
+    translate: calc(-2 * var(--k)) calc(-4 * var(--k));
+  }
+  82% {
+    scale: 1;
+    translate: 0 0;
+  }
+}
+
+/* Rayitas amarillas: titilan */
+@keyframes titilar {
+  0%,
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
+  50% {
+    scale: 0.7;
+    opacity: 0.55;
+  }
+}
+
+/* Pulso de opacidad (sombra del título) */
+@keyframes pulso-opacidad {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+/* ---------- Entradas (una vez) ---------- */
+
+@keyframes entrar-escala {
+  from {
+    scale: var(--desde, 0.92);
+  }
+  to {
+    scale: 1;
+  }
+}
+
+@keyframes encender {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Aparece subiendo; con --ease-gentle el resorte da el rebote leve */
+@keyframes aparecer-subiendo {
+  from {
+    opacity: 0;
+    translate: 0 calc(var(--subir, 24) * var(--k));
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* Salto desde arriba con rebote (Yoshi) */
+@keyframes saltar {
+  0% {
+    translate: 0 calc(-20 * var(--k));
+  }
+  55% {
+    translate: 0 0;
+  }
+  75% {
+    translate: 0 calc(-5 * var(--k));
+  }
+  100% {
+    translate: 0 0;
+  }
+}
+
+/* Aparece tambaleándose alrededor de su ángulo de Figma (--base) */
+@keyframes tambalear {
+  0% {
+    opacity: 0;
+    scale: 0.85;
+    rotate: calc(var(--base, 0deg) - 2deg);
+  }
+  40% {
+    opacity: 1;
+    scale: 1;
+    rotate: calc(var(--base, 0deg) + 2deg);
+  }
+  70% {
+    rotate: calc(var(--base, 0deg) - 1deg);
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+    rotate: var(--base, 0deg);
+  }
+}
+
+/* ---------- Clases genéricas ---------- */
+
 .anim-flotar {
   transform-origin: var(--origen, 50% 50%);
   animation: flotar calc(var(--dur, 3.2s) * var(--vel)) ease-in-out calc(var(--retraso, 0s) * var(--vel)) infinite;
+}
+
+.anim-flotar-suave {
+  animation: flotar-suave calc(var(--dur, 4s) * var(--vel)) ease-in-out calc(var(--retraso, 0s) * var(--vel)) infinite;
 }
 
 .anim-mecer {
@@ -56,10 +188,29 @@
   animation: respirar calc(var(--dur, 3s) * var(--vel)) ease-in-out calc(var(--retraso, 0s) * var(--vel)) infinite;
 }
 
+.anim-tocar {
+  transform-origin: 30% 10%;
+  animation: tocar calc(var(--dur, 1.8s) * var(--vel)) ease-in-out calc(var(--retraso, 0s) * var(--vel)) infinite;
+}
+
+.anim-titilar {
+  animation: titilar calc(var(--dur, 1.6s) * var(--vel)) ease-in-out calc(var(--retraso, 0s) * var(--vel)) infinite;
+}
+
+/* ---------- Revelado al hacer scroll (scripts/revelar.ts) ----------
+   Solo con JavaScript (html.js): sin él todo se ve de inmediato. */
+html.js .home [data-revelar]:not(.revelado) {
+  opacity: 0;
+}
+
+/* ---------- Movimiento reducido: sin bucles ni entradas, solo fundidos ---------- */
 @media (prefers-reduced-motion: reduce) {
   .anim-flotar,
+  .anim-flotar-suave,
   .anim-mecer,
-  .anim-respirar {
+  .anim-respirar,
+  .anim-tocar,
+  .anim-titilar {
     animation: none !important;
   }
 }
