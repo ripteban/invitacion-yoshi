@@ -1,23 +1,36 @@
-// Cloudflare Pages Function: sirve /medios/* (video de fondo y música) con soporte de rangos.
+// Cloudflare Worker: sirve /medios/* (videos de fondo y música) con soporte de rangos.
 // Safari en iPhone solo reproduce audio/video si el servidor responde por partes (206 Partial
-// Content); los archivos estáticos de Pages responden siempre completos (200), por eso esta función.
-export async function onRequest({ request, env }) {
+// Content); los archivos estáticos de Workers responden siempre completos (200), por eso este Worker.
+// Solo corre para /medios/* (run_worker_first en wrangler.jsonc); el resto lo sirven los estáticos.
+// Es la misma función que Katalina usaba como Pages Function, adaptada a Workers.
+export default {
+  async fetch(request, env) {
+    const { pathname } = new URL(request.url);
+    if (pathname.startsWith('/medios/')) return medios(request, env);
+    return env.ASSETS.fetch(request);
+  },
+};
+
+async function medios(request, env) {
   if (request.method !== 'GET' && request.method !== 'HEAD') {
     return new Response(null, { status: 405, headers: { Allow: 'GET, HEAD' } });
   }
 
-  // Archivo original desde los estáticos del sitio
+  // Archivo original desde los estáticos (sin la cabecera Range, que los estáticos ignoran)
   const original = await env.ASSETS.fetch(new Request(request.url, { method: 'GET' }));
   if (!original.ok) return original;
   const datos = await original.arrayBuffer();
   const total = datos.byteLength;
 
+  // _headers no se aplica a respuestas generadas por el Worker: se repiten aquí
   const headers = new Headers({
     'Content-Type': original.headers.get('Content-Type') ?? 'application/octet-stream',
     'Accept-Ranges': 'bytes',
     'Cache-Control': 'public, max-age=604800',
     'X-Robots-Tag': 'noindex, nofollow',
   });
+  const etag = original.headers.get('ETag');
+  if (etag) headers.set('ETag', etag);
   const cuerpo = (b) => (request.method === 'HEAD' ? null : b);
 
   const rango = /^bytes=(\d*)-(\d*)$/.exec(request.headers.get('Range') ?? '');

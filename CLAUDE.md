@@ -13,6 +13,8 @@ El plan completo está en `PLAN.md` y el inventario de recursos de Figma en `REC
 - Los recursos maestros (`src/assets/`) salen de `npm run recursos` (`scripts/preparar-recursos.mjs`), nunca a mano.
   Los originales de Figma viven en `figma-export/originales/` (ignorado en git) y los del usuario en `entrada/`.
 - Node local 22.17: Astro queda fijado en `~7.3.5` (7.4 pide Node ≥ 22.23.4).
+- Se publica como **Cloudflare Worker** (Workers Builds, `wrangler.jsonc`), no como Pages: `/medios/*` pasa por
+  `worker/index.js` para responder por partes (206), que los estáticos de Workers no hacen y Safari en iPhone exige.
 
 ## Desarrollo
 

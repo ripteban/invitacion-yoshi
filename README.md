@@ -1,7 +1,7 @@
 # invitacion-yoshi
 
 Invitación web "Party Familiar con Yoshi". Sitio estático (Astro + CSS + GSAP) para móvil, réplica 1:1 del
-Figma `Jwd5F7ykAxQtFDWMCu96sw`, publicado en Cloudflare Pages.
+Figma `Jwd5F7ykAxQtFDWMCu96sw`, publicado como Cloudflare Worker con archivos estáticos.
 
 ## Uso diario
 
@@ -36,8 +36,9 @@ Requiere Node 22.
 - **Música** (`Musica.astro`, `musica.ts`): lista para cuando exista `public/medios/musica.m4a`.
 - **Carga**: la intro baja solo lo suyo (~660 KB sin video); el Home y los chicharrones se precargan en segundo
   plano después del evento `load` (`content-visibility` en `.home` hasta entonces).
-- **Medios** (`public/medios/`): se sirven con `functions/medios/[archivo].js` (Cloudflare Pages Function) porque
-  Safari en iPhone exige respuestas por partes (206).
+- **Medios** (`public/medios/`): Safari en iPhone exige respuestas por partes (206) y los estáticos de Workers
+  responden siempre completos (200). Por eso `/medios/*` pasa por un Worker (`worker/index.js`, ver
+  `run_worker_first` en `wrangler.jsonc`) que corta el archivo según la cabecera `Range`.
 - **Movimiento reducido**: sin sacudida, chicharrones, bucles ni videos; solo fundidos.
 - **Sin JavaScript**: el Home se ve completo directamente.
 - **Privacidad**: `noindex` en meta, `X-Robots-Tag` en `public/_headers` y `robots.txt` con `Disallow: /`.
@@ -53,20 +54,16 @@ node scripts/qa-animaciones.mjs http://localhost:4322  # fluidez con CPU 4× má
 node scripts/qa-peso.mjs http://localhost:4322         # presupuesto de peso
 ```
 
-## Publicar en Cloudflare Pages
+## Publicar (Cloudflare Workers)
 
-1. Cloudflare → **Workers & Pages** → **Create** → pestaña **Pages** → **Connect to Git**.
-2. Elegir el repositorio `ripteban/invitacion-yoshi`, rama `main`.
-3. Configuración de build:
-   - Framework preset: **Astro**
-   - Build command: `npm run build`
-   - Build output directory: `dist`
-   - Variable de entorno: `NODE_VERSION` = `22`
-4. **Save and Deploy**. La carpeta `functions/` se detecta sola.
-5. Si la URL final no es `https://invitacion-yoshi.pages.dev`, actualizar `site` en `astro.config.mjs` y
-   publicar de nuevo (la vista previa de WhatsApp usa esa URL).
+El repo está conectado a **Workers Builds**: cada push a `main` compila y publica solo. La configuración vive en
+`wrangler.jsonc` (archivos estáticos de `dist/` + el Worker de `/medios/*`).
 
-Cada push a `main` vuelve a publicar.
+- Build command: `npm run build` · Deploy command: `npx wrangler deploy` · `NODE_VERSION` = `22`.
+- Publicar a mano desde la computadora: `npm run deploy` (pide `npx wrangler login` la primera vez).
+- Probar local igual que en Cloudflare: `npm run build && npx wrangler dev` → http://localhost:8787
+- `site` en `astro.config.mjs` debe ser la URL pública (`*.workers.dev` o el dominio propio): la usa la vista
+  previa de WhatsApp.
 
 ## Carpetas de trabajo (no se publican)
 
