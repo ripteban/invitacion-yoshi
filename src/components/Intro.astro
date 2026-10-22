@@ -62,6 +62,24 @@ import { evento } from '../data/evento';
       animation: none;
     }
   }
+  /* Capas de chicharrones voladores (las crea scripts/chicharrones.ts al tocar) */
+  :global(.chicharrones) {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  /* Atrás: dentro del lienzo, detrás de todo menos el fondo, levemente desenfocadas.
+     El desenfoque va en cada pieza (capa propia por will-change): en toda la capa obligaba a
+     repintarla en cada cuadro y bajaba de ~59 a ~55 fps con la CPU 4× más lenta. */
+  :global(.chicharrones--detras .chicharron) {
+    filter: blur(calc(1.5 * var(--k)));
+  }
+  /* Adelante: sobre todo y fija, para seguir cruzando mientras aparece el Home */
+  :global(.chicharrones--delante) {
+    position: fixed;
+    z-index: 50;
+    overflow: hidden;
+  }
   .rayita {
     background: var(--sol);
     border-radius: calc(11.162 * var(--k)) calc(11.162 * var(--k)) calc(6.378 * var(--k)) calc(6.378 * var(--k));

@@ -1,12 +1,15 @@
 // Apertura de la bolsa (plan 3C) con una línea de tiempo de GSAP:
 //   0–480 ms   sacudida decreciente + inflado
 //   480–560    pausa de tensión
-//   560        estallido: la tira de arriba sale volando girando y la bolsa rebota
+//              (dos chicharrones se asoman por la boca de la bolsa)
+//   560        estallido: la tira de arriba sale volando girando, la bolsa rebota y los
+//              chicharrones salen volando (chicharrones.ts)
 //   700–1100   título, instrucción y rayitas se desvanecen hacia arriba
-//   1200       el Home aparece con un fundido de 300 ms ease-out y se elimina la intro
-// Los chicharrones voladores se suman al estallido cuando lleguen sus PNG.
+//   1200       el Home aparece con un fundido de 300 ms ease-out y se elimina la intro,
+//              mientras los últimos chicharrones salen de pantalla
 // La música empieza con este mismo toque (único momento en que el navegador lo permite).
 import { gsap } from 'gsap';
+import { asomar, estallar, precargarChicharrones } from './chicharrones';
 import { iniciarMusica, mostrarBotonMusica } from './musica';
 import { iniciarRevelado } from './revelar';
 
@@ -85,6 +88,10 @@ function abrir() {
 
   tl.to(['.mano', '#boton-abrir'], { opacity: 0, duration: 0.15, ease: 'power1.out' }, 0);
 
+  // Dos chicharrones empujan desde adentro y se asoman por arriba
+  const asomados = asomar(bolsa, k);
+  tl.to(asomados, { y: `-=${20 * k}`, duration: 0.4, ease: 'power2.out', stagger: 0.06 }, 0.05);
+
   // Sacudida: 6 ciclos decrecientes + inflado
   const giros = [5, -4.5, 3.8, -3, 2, -1];
   giros.forEach((g, i) => {
@@ -99,6 +106,8 @@ function abrir() {
   tl.add(() => {
     gsap.set(tira, { visibility: 'visible', scaleX: 1.02, scaleY: 1.08, transformOrigin: '50% 50%' });
     bolsa.style.clipPath = rasgado(false);
+    asomados.forEach((el) => el.remove());
+    estallar(lienzo, k);
   }, 0.56);
   tl.to(tira, { y: -260 * k, x: 40 * k, rotation: 28, opacity: 0, duration: 0.7, ease: 'power2.out' }, 0.56);
   tl.to(bolsa, { scaleX: 1.12, scaleY: 1.12, duration: 0.09, ease: 'power2.out' }, 0.56);
@@ -112,4 +121,10 @@ function abrir() {
 }
 
 bolsa?.addEventListener('click', abrir);
+// Las imágenes de los chicharrones se bajan sin competir con la carga de la intro
+if (bolsa && !reducido) {
+  const precargar = () => precargarChicharrones(bolsa);
+  if (document.readyState === 'complete') precargar();
+  else addEventListener('load', precargar, { once: true });
+}
 boton?.addEventListener('click', abrir);
