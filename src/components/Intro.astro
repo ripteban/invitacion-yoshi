@@ -12,8 +12,9 @@ import { evento } from '../data/evento';
 ---
 
 <section class="intro" id="intro" aria-label="Abrir la invitación">
-  <!-- 15:86 · relleno 1080 × 1920 en "cover": se ve de 515.8 px de diseño de ancho en 412 × 917 -->
-  <Img src={fondo} ancho={515.8} class="llenar cubrir" calidad={90} sizes="max(100vw, 56.25vh)" eager />
+  <!-- 15:86 · relleno 1080 × 1920 en "cover": se ve de 515.8 px de diseño de ancho en 412 × 917.
+       Va debajo del video: casi solo se ve mientras carga, así que basta calidad 75 -->
+  <Img src={fondo} ancho={515.8} class="llenar cubrir" calidad={75} sizes="max(100vw, 56.25vh)" eager />
   <VideoFondo nombre="fondo-intro" fondo="intro" />
 
   <div class="intro__lienzo">

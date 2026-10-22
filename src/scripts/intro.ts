@@ -35,9 +35,15 @@ function rasgado(arriba: boolean) {
   return arriba ? `polygon(0% 0%, 100% 0%, ${borde.reverse().join(', ')})` : `polygon(${borde.join(', ')}, 100% 100%, 0% 100%)`;
 }
 
+/** El Home empieza a renderizarse (y a bajar sus imágenes) cuando la intro ya cargó */
+function cargarHome() {
+  home?.classList.add('cargado');
+}
+
 function mostrarHome() {
   if (!intro || !home) return;
   window.scrollTo(0, 0);
+  cargarHome();
   home.classList.add('visible');
   home.removeAttribute('inert');
   activarVideosHome();
@@ -123,10 +129,11 @@ function abrir() {
 }
 
 bolsa?.addEventListener('click', abrir);
-// Las imágenes de los chicharrones se bajan sin competir con la carga de la intro
-if (bolsa && !reducido) {
-  const precargar = () => precargarChicharrones(bolsa);
-  if (document.readyState === 'complete') precargar();
-  else addEventListener('load', precargar, { once: true });
+// Los chicharrones y el Home se bajan después, sin competir con la carga de la intro
+function despuesDeCargar() {
+  if (bolsa && !reducido) precargarChicharrones(bolsa);
+  cargarHome();
 }
+if (document.readyState === 'complete') despuesDeCargar();
+else addEventListener('load', despuesDeCargar, { once: true });
 boton?.addEventListener('click', abrir);

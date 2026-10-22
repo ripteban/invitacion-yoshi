@@ -61,20 +61,21 @@ const ogImagen = new URL('/og-image.jpg', sitio).href;
   <body class="bloqueado">
     <Intro />
 
-    <!-- Home (frame "2" de Figma, 412 × 2014). El orden del DOM es el orden de capas de Figma. -->
+    <!-- Home (frame "2" de Figma, 412 × 2014). El DOM va en orden de lectura (lectores de pantalla);
+         el orden de capas de Figma lo da --z: portada 1 · ola 2 · cierre 3 · detalles 4 · Yoshi 5 · banner 6 -->
     <main class="home" id="home" inert tabindex="-1">
       <h1 class="solo-lectores">{evento.titulo}</h1>
       <Portada />
-      <!-- 74:218 · ola -->
-      <img class="abs" src={ola.src} alt="" width={ola.width} height={ola.height} style="--x:-14;--y:835;--w:439;--h:91" />
-      <Cierre />
-      <Detalles />
       <!-- 74:280 · Yoshi, con sombra que sigue su silueta -->
-      <Img src={yoshi} ancho={82.514} alt="" class="abs yoshi" style="--x:85.566;--y:380.065;--w:82.514;--h:120.103" eager />
+      <Img src={yoshi} ancho={82.514} alt="" class="abs yoshi" style="--x:85.566;--y:380.065;--w:82.514;--h:120.103;--z:5" />
+      <!-- 74:218 · ola -->
+      <img class="abs" src={ola.src} alt="" width={ola.width} height={ola.height} style="--x:-14;--y:835;--w:439;--h:91;--z:2" />
       <!-- 77:304 · banner raster -->
-      <div class="banner abs" style="--x:15.157;--y:923;--w:381.685;--h:169.638" data-revelar>
+      <div class="banner abs" style="--x:15.157;--y:923;--w:381.685;--h:169.638;--z:6" data-revelar>
         <Img src={banner} ancho={381.685} alt="Familia, risas y ganas de pasarla bien. ¡Estás invitado!" calidad={90} />
       </div>
+      <Detalles />
+      <Cierre />
     </main>
 
     <Musica />
@@ -98,6 +99,12 @@ const ogImagen = new URL('/og-image.jpg', sitio).href;
     opacity: 0;
     pointer-events: none;
     outline: none;
+  }
+  /* Con JavaScript, el Home no se renderiza hasta que la intro terminó de cargar (intro.ts agrega
+     .cargado): así sus imágenes, todas diferidas, no le quitan ancho de banda a la intro.
+     Tiene alto fijo, por eso no hay saltos de layout al mostrarlo. */
+  :global(html.js) .home:not(.cargado) {
+    content-visibility: hidden;
   }
   .home :global(.yoshi) {
     filter: var(--sombra-yoshi);
