@@ -7,7 +7,7 @@
 import sharp from 'sharp';
 import { optimize } from 'svgo';
 import { existsSync } from 'node:fs';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 
 const FIGMA = 'figma-export/originales';
@@ -43,6 +43,20 @@ async function png(src, ruta, ancho, recorte) {
   if (destino < w) img = img.resize({ width: destino, kernel: 'lanczos3' });
   const info = await img.png({ compressionLevel: 9 }).toFile(await salida(ruta));
   console.log('png', ruta.padEnd(24), `${info.width}×${info.height}`, `(${(info.width / ancho).toFixed(2)}× diseño)`, '←', src);
+}
+
+/** Recorta al cuadro donde alfa > 0, sin pérdida y conservando la transparencia */
+async function recortarAlfa(src, ruta) {
+  const { data, info } = await sharp(src).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  let x0 = info.width, y0 = info.height, x1 = 0, y1 = 0;
+  for (let y = 0; y < info.height; y++)
+    for (let x = 0; x < info.width; x++)
+      if (data[(y * info.width + x) * 4 + 3] > 0) {
+        if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+      }
+  const w = x1 - x0 + 1, h = y1 - y0 + 1;
+  await sharp(src).extract({ left: x0, top: y0, width: w, height: h }).png({ compressionLevel: 9 }).toFile(await salida(ruta));
+  console.log('alfa', ruta.padEnd(24), `${w}×${h}`, '←', src);
 }
 
 async function svg(src, ruta) {
@@ -86,4 +100,12 @@ await svg(join(FIGMA, '22-175_flecha.svg'), 'svg/flecha.svg');
 await svg(join(FIGMA, '68-139_resplandor.svg'), 'svg/resplandor.svg');
 await svg(join(FIGMA, '74-218_ola.svg'), 'svg/ola.svg');
 
-// Chicharrones, videos y música se agregan aquí cuando lleguen a entrada/ (Fase 3).
+// ---------- Chicharrones voladores (entrada/chicharrones/chicharron-N.png) ----------
+// Se quita el borde transparente sobrante; Astro genera los WebP con alfa (ver Bolsa.astro).
+const DIR_CHICHARRONES = join(IN, 'chicharrones');
+if (existsSync(DIR_CHICHARRONES)) {
+  const piezas = (await readdir(DIR_CHICHARRONES)).filter((f) => /^chicharron-\d+\.png$/.test(f)).sort();
+  for (const f of piezas) await recortarAlfa(join(DIR_CHICHARRONES, f), `chicharrones/${f}`);
+}
+
+// Videos y música se agregan aquí cuando lleguen a entrada/.

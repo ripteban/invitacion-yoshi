@@ -79,9 +79,11 @@ async function probar(nombre, { reducido = false, selector = '.bolsa', video = f
   await context.close();
 }
 
-await probar('bolsa', { video: true });
+await probar('bolsa');
 await probar('botón', { selector: '#boton-abrir' });
 await probar('movimiento reducido', { reducido: true });
+// Grabar el video le quita CPU a la página: sus cuadros no cuentan para el veredicto de fluidez
+await probar('demo (grabando)', { video: true });
 await browser.close();
 
 const [archivo] = await readdir(VIDEO).then((l) => l.filter((f) => f.endsWith('.webm') && f !== 'demo.webm'));
