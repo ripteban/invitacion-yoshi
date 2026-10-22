@@ -68,6 +68,9 @@ node scripts/qa-peso.mjs http://localhost:4322         # presupuesto de peso
 
 Cada push a `main` vuelve a publicar.
 
+Para probar en local igual que en Pages (con la Function de `/medios`): `npm run build && npm run pages:dev`
+→ http://localhost:8788
+
 ## Carpetas de trabajo (no se publican)
 
 - `entrada/`: archivos entregados (chicharrones, videos, retrato). Ignorada en git.
