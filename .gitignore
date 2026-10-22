@@ -19,3 +19,6 @@ Thumbs.db
 *.log
 .env
 .env.*
+
+# Estado local de wrangler (pages dev)
+.wrangler/
