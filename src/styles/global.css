@@ -54,13 +54,14 @@ button {
   z-index: var(--z, auto);
 }
 
-/* Secciones del Home: no crean contexto de apilamiento, así el orden de capas (z) es global como en Figma */
+/* Secciones del Home. Con --z quedan en esa capa (el DOM va en orden de lectura, ver index.astro) */
 .seccion {
   position: absolute;
   left: 0;
   /* --extra: espacio agregado sobre el diseño de Figma (ver .home) */
   top: calc((var(--top) + var(--extra, 0)) * var(--k));
   width: 100%;
+  z-index: var(--z, auto);
 }
 
 .espejo {
