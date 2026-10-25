@@ -2,8 +2,9 @@
 // Video de fondo que reemplaza un relleno de Figma en su misma caja (object-fit: cover).
 // Va encima de la imagen de Figma, invisible hasta que de verdad se reproduce: mientras carga
 // (o si el navegador lo bloquea) se ve el diseño tal cual. Lo controla scripts/videos.ts.
-// Se publica en tres formatos a la resolución original (ver scripts/videos-config.mjs); el navegador
-// usa el primero que puede reproducir según su type, sin descargar los demás.
+// Se publica en tres formatos a la resolución original (ver scripts/videos-config.mjs). Antes de cargar,
+// videos.ts deja solo el primero que el equipo decodifica por hardware (o, si ninguno, el primero que puede
+// reproducir): por eso ninguno se precarga desde el HTML.
 // Mientras no exista ningún archivo en public/medios no se renderiza nada.
 import { existsSync, readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -38,7 +39,7 @@ const fuentes = Object.entries(CODECS)
       playsinline
       disablepictureinpicture
       disableremoteplayback
-      preload={fondo === 'fijo' ? 'auto' : 'none'}
+      preload="none"
       aria-hidden="true"
     >
       {fuentes.map(({ ruta, version, tipo }) => (

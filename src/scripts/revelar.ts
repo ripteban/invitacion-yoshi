@@ -15,7 +15,7 @@ export function iniciarRevelado() {
         observador.unobserve(entrada.target);
       }
     },
-    { rootMargin: '0px 0px -12% 0px' },
+    { rootMargin: '0px 0px -8% 0px' },
   );
   elementos.forEach((el) => observador.observe(el));
 }

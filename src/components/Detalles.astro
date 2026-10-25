@@ -143,15 +143,15 @@ const capas = [
     white-space: nowrap;
   }
 
-  /* Al revelarse: la placa sube y aparece; los datos entran escalonados cada 120 ms y el ícono hace "pop" */
+  /* Al revelarse: la placa sube y aparece; los datos entran escalonados cada 90 ms y el ícono hace "pop" */
   .detalles__placa:global(.revelado) {
     --subir: 16;
-    animation: aparecer-subiendo 600ms var(--ease-out) both;
+    animation: aparecer-subiendo 450ms var(--ease-out) both;
   }
   .dato:global(.revelado) {
     --subir: 18;
-    --retraso-dato: calc(var(--i) * 120ms);
-    animation: aparecer-subiendo 600ms var(--ease-out) var(--retraso-dato) both;
+    --retraso-dato: calc(var(--i) * 90ms);
+    animation: aparecer-subiendo 450ms var(--ease-out) var(--retraso-dato) both;
   }
   .dato:global(.revelado) .dato__icono {
     --desde: 0.7;

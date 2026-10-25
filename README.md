@@ -63,6 +63,7 @@ node scripts/qa-capturas.mjs http://localhost:4322     # comparación con Figma 
 node scripts/qa-tamanos.mjs http://localhost:4322      # 13 tamaños de móvil
 node scripts/qa-animaciones.mjs http://localhost:4322  # fluidez con CPU 4× más lenta, videos, CLS y demo
 node scripts/qa-peso.mjs http://localhost:4322         # presupuesto de peso
+node scripts/qa-heroe-fps.mjs http://localhost:4322   # fluidez del héroe en un Android de gama media
 ```
 
 ## Publicar en Cloudflare Pages

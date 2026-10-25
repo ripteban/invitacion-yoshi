@@ -34,13 +34,13 @@ import { evento } from '../data/evento';
   }
   .mensaje > :global(.revelado) {
     --subir: 16;
-    animation: aparecer-subiendo 700ms var(--ease-out) both;
+    animation: aparecer-subiendo 500ms var(--ease-out) both;
   }
   .mensaje > :global(.revelado:nth-child(2)) {
-    animation-delay: 120ms;
+    animation-delay: 90ms;
   }
   .mensaje > :global(.revelado:nth-child(3)) {
-    animation-delay: 240ms;
+    animation-delay: 180ms;
   }
   @media (prefers-reduced-motion: reduce) {
     .mensaje > :global(.revelado) {

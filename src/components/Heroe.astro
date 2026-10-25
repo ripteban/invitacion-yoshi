@@ -3,8 +3,10 @@
 // (saturación y luz suave), sombra del avatar, resplandor y haces de luz (modo trama), sombra del título,
 // avatar, título "CumpleMania", partículas, logo, gradas, sombra y placa "Eduardo".
 // La máscara de Figma (235:23, desvanecido hacia abajo en 412 × 917.87) se ve en el render sobre el estadio, el
-// avatar y lo que va entre ellos, pero no sobre las gradas ni la placa del nombre: aquí va una sola vez en un
-// contenedor con esas capas, que además aísla las mezclas igual que el frame sobre el fondo negro.
+// avatar y lo que va entre ellos, pero no sobre las gradas ni la placa del nombre. Como debajo solo hay negro,
+// aquí es un degradado a negro encima de esas capas, que pesa mucho menos que una máscara sobre un video.
+// Rendimiento (Android de gama media): todo se dibuja en cada cuadro porque el video se mueve, así que se evitan
+// capas a pantalla completa que no aportan (ver los filtros del estadio y las partículas).
 import Img from './Img.astro';
 import VideoFondo from './VideoFondo.astro';
 import estadio from '../assets/heroe/estadio.png';
@@ -19,7 +21,6 @@ import hazIzq from '../assets/svg/haz-izq.svg';
 import hazDer from '../assets/svg/haz-der.svg';
 import sombraTitulo from '../assets/svg/sombra-titulo.svg';
 import particulas from '../assets/svg/particulas.svg';
-import sofi from '../assets/svg/sofi.svg';
 import logo from '../assets/svg/logo-wwe.svg';
 import sombraEduardo from '../assets/svg/sombra-eduardo.svg';
 import { evento } from '../data/evento';
@@ -31,11 +32,9 @@ const svg = (s: { src: string; width: number; height: number }) => ({ src: s.src
 <div class="heroe abs" style="--x:0;--y:-188;--w:412;--h:960;--z:2">
   <div class="heroe__desvanecido abs" style="--x:0;--y:0;--w:412;--h:960">
   <!-- 235:24–235:26 · estadio: video con pirotecnia (relleno "cover" de la caja de Figma, sin oscurecer) sobre
-       el render de Figma, que se ve mientras carga; y los filtros de color -->
-  <Img src={estadio} ancho={412} calidad={85} class="heroe__estadio abs" style="--x:0;--y:0;--w:412;--h:922" eager />
+       el render de Figma, que se ve mientras carga y se oculta cuando el video ya lo tapa -->
+  <Img src={estadio} ancho={412} calidad={85} class="heroe__estadio heroe__estadio--imagen abs" style="--x:0;--y:0;--w:412;--h:922" eager />
   <VideoFondo nombre="fondo-estadio" fondo="home" class="heroe__estadio abs" style="--x:-1.825;--y:-4.065;--w:415.649;--h:926" />
-  <div class="heroe__filtro heroe__filtro--saturacion abs" style="--x:0;--y:0;--w:412;--h:922"></div>
-  <div class="heroe__filtro heroe__filtro--luz abs" style="--x:0;--y:0;--w:412;--h:922"></div>
   <!-- 235:27 · sombra del avatar -->
   <img class="abs" {...svg(sombraAvatar)} style="--x:-39.334;--y:444.41;--w:461.587;--h:663.28" />
   <!-- 235:28 · resplandor cálido y haces de luz, en modo trama -->
@@ -54,10 +53,14 @@ const svg = (s: { src: string; width: number; height: number }) => ({ src: s.src
   <div class="heroe__titulo abs" style="--x:19.936;--y:276;--w:372.129;--h:140.553">
     <Img src={titulo} ancho={399.553} alt="" calidad={88} class="abs" style="--x:-15.667;--y:0;--w:399.553;--h:140.553" />
   </div>
-  <!-- 235:42 · partículas doradas y destellos (titilan) -->
-  <img class="heroe__particulas abs" {...svg(particulas)} style="--x:0;--y:0;--w:412;--h:922" />
-  <!-- 276:518 · parche que tapa el letrero de SoFi Stadium: fijo, sin animación -->
-  <img class="abs" {...svg(sofi)} style="--x:0;--y:0;--w:412;--h:922" />
+  <!-- 235:42 · partículas doradas y destellos (titilan). Ocupan de 467 a 895: se recortan a esa franja para no
+       repintar el resto del lienzo, que es transparente. (El parche de SoFi, 276:518, quedó en la parte de arriba
+       que el frame 280:519 oculta, por eso ya no va.) -->
+  <div class="heroe__particulas abs" style="--x:0;--y:460;--w:412;--h:442">
+    <img class="abs" {...svg(particulas)} style="--x:0;--y:-460;--w:412;--h:922" />
+  </div>
+  <!-- máscara 235:23: desvanecido a negro en el último 15 % de 917.87 -->
+  <div class="heroe__fundido abs" style="--x:0;--y:780.19;--w:412;--h:179.81"></div>
   <!-- 235:119 · logo -->
   <img class="heroe__logo abs" {...svg(logo)} style="--x:142.558;--y:184.064;--w:122.659;--h:103.72" />
   </div>
@@ -77,39 +80,29 @@ const svg = (s: { src: string; width: number; height: number }) => ({ src: s.src
     overflow: hidden; /* respaldo para Safari < 16 */
     overflow: clip;
   }
-  .heroe__desvanecido {
-    -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 15%);
-    mask-image: linear-gradient(to top, transparent 0%, #000 15%);
-    -webkit-mask-size: 100% calc(917.87 * var(--k));
-    mask-size: 100% calc(917.87 * var(--k));
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
+  .heroe__fundido {
+    background: linear-gradient(to bottom, transparent 0, #000 calc(137.68 * var(--k)));
   }
-  .heroe__filtro--saturacion {
-    background: red;
-    opacity: 0.13;
-    mix-blend-mode: saturation;
+  /* Filtros de color de Figma (rojo al 13 % en "saturación" y negro al 70 % en "luz suave") aplicados al propio
+     estadio. Como capas de mezcla costaban dos pasadas extra a pantalla completa en cada cuadro, y Safari ni
+     siquiera las aplica sobre video. Esta cadena es la más cercana a esa mezcla (ajustada sobre el render del
+     estadio: error medio 7/255) y el navegador la resuelve en una sola operación de color. */
+  .heroe :global(.heroe__estadio) {
+    filter: saturate(1.34) contrast(1.28) brightness(0.68);
+  }
+  .heroe__desvanecido:has(:global(.video-fondo.reproduciendo)) :global(.heroe__estadio--imagen) {
+    visibility: hidden;
+    transition: visibility 0s 700ms; /* después del fundido de entrada del video */
+  }
+  .heroe__particulas {
+    overflow: hidden;
   }
   .heroe__titulo {
     overflow: hidden; /* respaldo para Safari < 16 */
     overflow: clip;
   }
-  .heroe__filtro--luz {
-    background: black;
-    opacity: 0.7;
-    mix-blend-mode: soft-light;
-  }
   .heroe__trama {
     mix-blend-mode: screen;
-  }
-  /* Safari (y todo navegador de iPhone) no mezcla capas sobre un <video>: en su lugar el propio estadio lleva la
-     cadena de filtros más cercana a "rojo 13 % saturación + negro 70 % luz suave" (ajustada sobre el render del
-     estadio: error medio 7/255 contra 32 sin filtro) */
-  :global(html.webkit) .heroe__filtro {
-    display: none;
-  }
-  :global(html.webkit) .heroe :global(.heroe__estadio) {
-    filter: saturate(1.34) contrast(1.28) brightness(0.68);
   }
   .heroe__gradas {
     overflow: hidden; /* respaldo para Safari < 16 */

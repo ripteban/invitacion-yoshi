@@ -74,23 +74,23 @@ import { evento } from '../data/evento';
   }
 
   /* Al revelarse: el título aparece tambaleándose alrededor de sus −3° y luego late; el subtítulo entra
-     150 ms después y el cinturón sube con resorte y queda flotando */
+     110 ms después y el cinturón sube con resorte y queda flotando */
   .cierre__titulo:global(.revelado) {
     --base: -3deg;
     --escala: 1.02;
     animation:
-      tambalear 900ms var(--ease-out) both,
-      respirar 2.4s ease-in-out 900ms infinite;
+      tambalear 700ms var(--ease-out) both,
+      respirar 2.4s ease-in-out 700ms infinite;
   }
   .cierre__subtitulo:global(.revelado) {
     --subir: 14;
-    animation: aparecer-subiendo 600ms var(--ease-out) 150ms both;
+    animation: aparecer-subiendo 450ms var(--ease-out) 110ms both;
   }
   .cierre__cinturon:global(.revelado) {
     --subir: 24;
     animation:
-      aparecer-subiendo var(--dur-gentle) var(--ease-gentle) 250ms both,
-      flotar-suave 3.6s ease-in-out 1.3s infinite;
+      aparecer-subiendo var(--dur-gentle) var(--ease-gentle) 180ms both,
+      flotar-suave 3.6s ease-in-out 1.1s infinite;
   }
   @media (prefers-reduced-motion: reduce) {
     .cierre__titulo:global(.revelado),
