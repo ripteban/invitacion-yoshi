@@ -1,6 +1,13 @@
 ---
 // Botón guía (280:711): píldora con flecha hacia abajo al costado del héroe que invita a seguir bajando.
-// En Figma es la flecha "arrow.up" (42.769 × 85.538) rotada 180°. Al tocarla baja con suavidad hasta el mensaje.
+// En Figma es la flecha "arrow.up" (42.769 × 85.538, radio 19.55, relleno negro al 20 %) rotada 180°, con el
+// efecto "Glass": luz −45° al 80 %, refracción 80, profundidad 20, dispersión 50, escarchado 4.
+// Vidrio líquido:
+// - Chromium (Chrome, Edge, Android): refracción real. backdrop-filter con un filtro SVG que desplaza el fondo
+//   según un mapa calculado para la forma exacta del botón (más fuerte en el borde, nulo en el centro), separa los
+//   canales de color para la dispersión y suaviza con el escarchado.
+// - Safari y Firefox no aplican filtros SVG al fondo: vidrio esmerilado (desenfoque y saturación).
+// Al tocarlo baja con suavidad hasta el mensaje.
 import flecha from '../assets/svg/flecha-guia.svg';
 ---
 
@@ -8,18 +15,141 @@ import flecha from '../assets/svg/flecha-guia.svg';
   <img src={flecha.src} alt="" width={flecha.width} height={flecha.height} />
 </button>
 
+<svg class="guia__defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <filter id="vidrio-liquido" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+    <feImage id="vidrio-mapa" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="mapa"></feImage>
+    <feDisplacementMap id="vidrio-r" in="SourceGraphic" in2="mapa" scale="0" xChannelSelector="R" yChannelSelector="G" result="dr"></feDisplacementMap>
+    <feDisplacementMap id="vidrio-g" in="SourceGraphic" in2="mapa" scale="0" xChannelSelector="R" yChannelSelector="G" result="dg"></feDisplacementMap>
+    <feDisplacementMap id="vidrio-b" in="SourceGraphic" in2="mapa" scale="0" xChannelSelector="R" yChannelSelector="G" result="db"></feDisplacementMap>
+    <feColorMatrix in="dr" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r"></feColorMatrix>
+    <feColorMatrix in="dg" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="g"></feColorMatrix>
+    <feColorMatrix in="db" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="b"></feColorMatrix>
+    <feBlend in="r" in2="g" mode="screen" result="rg"></feBlend>
+    <feBlend in="rg" in2="b" mode="screen" result="rgb"></feBlend>
+    <feGaussianBlur id="vidrio-escarcha" in="rgb" stdDeviation="0"></feGaussianBlur>
+  </filter>
+</svg>
+
 <script>
+  // Valores del efecto "Glass" de Figma
+  const VIDRIO = { radio: 19.55, profundidad: 20, refraccion: 80, dispersion: 50, escarcha: 4 };
+
   const boton = document.querySelector<HTMLButtonElement>('.guia');
   const destino = document.getElementById('mensaje');
   const reducido = matchMedia('(prefers-reduced-motion: reduce)').matches;
   boton?.addEventListener('click', () => destino?.scrollIntoView({ behavior: reducido ? 'auto' : 'smooth', block: 'start' }));
+
+  // Solo Chromium refracta el fondo con filtros SVG en backdrop-filter
+  const marcas = (navigator as Navigator & { userAgentData?: { brands: { brand: string }[] } }).userAgentData?.brands ?? [];
+  const chromium = marcas.some(({ brand }) => /Chromium/.test(brand));
+
+  /** Mapa de desplazamiento para un rectángulo redondeado de w × h px con radio r y borde refractivo de `bisel` px:
+   *  R/G = vector (x, y) hacia el centro, más fuerte en el borde (perfil de lente) y nulo en el centro. */
+  function mapa(w: number, h: number, r: number, bisel: number) {
+    const lienzo = document.createElement('canvas');
+    lienzo.width = w;
+    lienzo.height = h;
+    const ctx = lienzo.getContext('2d')!;
+    const img = ctx.createImageData(w, h);
+    const bx = w / 2 - r, by = h / 2 - r;
+    // Distancia con signo al borde (negativa adentro)
+    const sd = (x: number, y: number) => {
+      const qx = Math.abs(x) - bx, qy = Math.abs(y) - by;
+      return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r;
+    };
+    for (let j = 0; j < h; j++) {
+      for (let i = 0; i < w; i++) {
+        const x = i + 0.5 - w / 2, y = j + 0.5 - h / 2;
+        const d = -sd(x, y);
+        let vx = 0, vy = 0;
+        if (d > 0 && d < bisel) {
+          // Normal hacia afuera por diferencias finitas; el desplazamiento apunta hacia adentro
+          const nx = sd(x + 0.5, y) - sd(x - 0.5, y), ny = sd(x, y + 0.5) - sd(x, y - 0.5);
+          const n = Math.hypot(nx, ny) || 1;
+          const t = 1 - d / bisel;
+          const m = 1 - Math.sqrt(1 - t * t); // perfil circular: crece rápido al llegar al borde
+          vx = (-nx / n) * m;
+          vy = (-ny / n) * m;
+        }
+        const k = (j * w + i) * 4;
+        img.data[k] = Math.round(128 + vx * 127);
+        img.data[k + 1] = Math.round(128 + vy * 127);
+        img.data[k + 2] = 128;
+        img.data[k + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    return lienzo.toDataURL();
+  }
+
+  function preparar() {
+    if (!boton) return;
+    const { width, height } = boton.getBoundingClientRect();
+    const w = Math.round(width), h = Math.round(height);
+    if (!w || !h) return;
+    const k = width / 42.769; // escala de diseño → px
+    const desplazamiento = VIDRIO.profundidad * k * (VIDRIO.refraccion / 100); // máximo, en px
+    const escala = desplazamiento * 2; // feDisplacementMap usa scale × (canal − 0.5)
+    const separacion = (VIDRIO.dispersion / 100) * 0.12; // dispersión: cada canal se desplaza un poco distinto
+    const set = (id: string, a: string, v: string) => document.getElementById(id)?.setAttribute(a, v);
+    set('vidrio-mapa', 'href', mapa(w, h, Math.min(VIDRIO.radio * k, w / 2, h / 2), VIDRIO.profundidad * k));
+    set('vidrio-mapa', 'width', String(w));
+    set('vidrio-mapa', 'height', String(h));
+    set('vidrio-r', 'scale', String(escala * (1 + separacion)));
+    set('vidrio-g', 'scale', String(escala));
+    set('vidrio-b', 'scale', String(escala * (1 - separacion)));
+    set('vidrio-escarcha', 'stdDeviation', String((VIDRIO.escarcha / 2) * k));
+    boton.classList.add('guia--liquido');
+  }
+
+  if (boton && chromium) {
+    preparar();
+    new ResizeObserver(preparar).observe(boton);
+  }
 </script>
 
 <style>
+  .guia__defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
   .guia {
+    --radio: calc(19.55 * var(--k));
     cursor: pointer;
+    border-radius: var(--radio);
+    /* Safari y Firefox: vidrio esmerilado */
+    -webkit-backdrop-filter: blur(calc(5 * var(--k))) saturate(1.5);
+    backdrop-filter: blur(calc(5 * var(--k))) saturate(1.5);
+    box-shadow:
+      inset 0 0 calc(6 * var(--k)) rgba(255, 255, 255, 0.12),
+      0 calc(4 * var(--k)) calc(12 * var(--k)) rgba(0, 0, 0, 0.35);
+  }
+  /* Chromium: refracción real (el mapa lo calcula el script según el tamaño del botón) */
+  .guia.guia--liquido {
+    -webkit-backdrop-filter: url(#vidrio-liquido) saturate(1.2);
+    backdrop-filter: url(#vidrio-liquido) saturate(1.2);
+  }
+  /* Luz a −45° al 80 %: filo brillante arriba a la izquierda y un reflejo más suave abajo a la derecha */
+  .guia::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: calc(1.2 * var(--k));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.18) 28%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.14) 72%, rgba(255, 255, 255, 0.45) 100%);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    pointer-events: none;
   }
   .guia img {
+    position: relative;
     width: 100%;
     height: 100%;
     rotate: 180deg;
@@ -27,7 +157,6 @@ import flecha from '../assets/svg/flecha-guia.svg';
   .guia:focus-visible {
     outline: calc(2 * var(--k)) solid var(--texto);
     outline-offset: calc(3 * var(--k));
-    border-radius: calc(20 * var(--k));
   }
   /* Aparece tras la entrada del héroe y luego sube y baja para llamar la atención */
   :global(.home.visible) .guia {
