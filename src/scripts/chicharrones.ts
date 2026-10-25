@@ -1,10 +1,8 @@
-// Chicharrones de la apertura (plan 3C):
-// - asomar(): durante la sacudida, dos piezas se asoman por la boca de la bolsa (van dentro del
-//   botón y por debajo de la imagen, así siguen sus movimientos).
-// - estallar(): salen volando en abanico (±65° de la vertical) con velocidad inicial y gravedad
-//   (Physics2DPlugin), giro propio y escala de 0.6 a 1.3, como si vinieran hacia la cámara.
-//   Las de adelante van en una capa fija sobre todo (siguen cruzando mientras aparece el Home);
-//   las de atrás, dentro de la intro, más chicas y desenfocadas. Todas salen de pantalla.
+// Piezas voladoras de la apertura (hoy la W; antes chicharrones, de ahí los nombres):
+// estallar() las lanza desde el pecho de la silueta en abanico (±65° de la vertical) con velocidad inicial y
+// gravedad (Physics2DPlugin), giro propio y escala de 0.6 a 1.3, como si vinieran hacia la cámara.
+// Las de adelante van en una capa fija sobre todo (siguen cruzando mientras aparece el Home); las de atrás,
+// dentro de la intro, más chicas y desenfocadas. Todas salen de pantalla.
 // Solo se usan las imágenes ya decodificadas: si la red es lenta, el estallido no espera.
 import { gsap } from 'gsap';
 import { Physics2DPlugin } from 'gsap/Physics2DPlugin';
@@ -17,8 +15,8 @@ const CANTIDAD_DELANTE = 12;
 const CANTIDAD_DETRAS = 7;
 const DURACION = 1.8; // s: con esta gravedad todas salen de pantalla antes
 const GRAVEDAD = 1600; // u/s²
-// Boca de la bolsa en coordenadas del frame (la costura está al 7.5 % de 428 u)
-const BOCA = { x: 206, y: 352, ancho: 230 };
+// Origen: pecho de la silueta (257:492, caja de 22.88 a 389.12 × 226.13 a 754.77) en coordenadas del frame
+const BOCA = { x: 206, y: 420, ancho: 220 };
 
 const azar = (a: number, b: number) => a + Math.random() * (b - a);
 
@@ -26,9 +24,9 @@ let piezas: Pieza[] = [];
 const listas = new Map<number, HTMLImageElement>();
 
 /** Descarga y decodifica las imágenes con baja prioridad (llamar al cargar la página) */
-export function precargarChicharrones(bolsa: HTMLElement) {
+export function precargarChicharrones(origen: HTMLElement) {
   try {
-    piezas = JSON.parse(bolsa.dataset.chicharrones ?? '[]');
+    piezas = JSON.parse(origen.dataset.chicharrones ?? '[]');
   } catch {
     piezas = [];
   }
@@ -56,23 +54,6 @@ function pieza(i: number, anchoPx: number) {
 }
 
 const disponibles = () => [...listas.keys()];
-
-/** Dos piezas escondidas detrás de la boca de la bolsa, listas para asomarse */
-export function asomar(bolsa: HTMLElement, k: number) {
-  const ids = disponibles();
-  if (!ids.length) return [];
-  const imagen = bolsa.querySelector('picture');
-  // Posiciones locales de la bolsa (330.572 × 428.132 u)
-  return [
-    { x: 95, ancho: 74, giro: -20 },
-    { x: 185, ancho: 66, giro: 25 },
-  ].map(({ x, ancho, giro }, n) => {
-    const el = pieza(ids[n % ids.length], ancho * k)!;
-    gsap.set(el, { x: x * k, y: 16 * k, rotation: giro });
-    bolsa.insertBefore(el, imagen);
-    return el;
-  });
-}
 
 /** Lanza el estallido. `lienzo` es el frame de la intro (para convertir u → px) */
 export function estallar(lienzo: HTMLElement, k: number) {

@@ -1,25 +1,24 @@
 ---
 import '@fontsource/lilita-one/latin-400.css';
-import '@fontsource/montserrat/latin-900-italic.css';
 import '@fontsource/barlow-condensed/latin-600.css';
+import '@fontsource/barlow-condensed/latin-700.css';
 import '../styles/tokens.css';
 import '../styles/global.css';
 import '../styles/animaciones.css';
-// La intro usa Lilita One y Montserrat Black Italic: se precargan para que no parpadeen
+// La intro usa Barlow Condensed Bold y Lilita One: se precargan para que no parpadeen
+import barlow700 from '@fontsource/barlow-condensed/files/barlow-condensed-latin-700-normal.woff2?url';
 import lilita400 from '@fontsource/lilita-one/files/lilita-one-latin-400-normal.woff2?url';
-import montserrat900i from '@fontsource/montserrat/files/montserrat-latin-900-italic.woff2?url';
 
 import Fondo from '../components/Fondo.astro';
 import Intro from '../components/Intro.astro';
-import Portada from '../components/Portada.astro';
+import Heroe from '../components/Heroe.astro';
+import FondoInferior from '../components/FondoInferior.astro';
+import Mensaje from '../components/Mensaje.astro';
 import Detalles from '../components/Detalles.astro';
 import Cierre from '../components/Cierre.astro';
-import Img from '../components/Img.astro';
 import Musica from '../components/Musica.astro';
 
-import ola from '../assets/svg/ola.svg';
-import yoshi from '../assets/home/yoshi.png';
-import banner from '../assets/home/banner.png';
+import separador from '../assets/svg/separador.svg';
 
 import { evento } from '../data/evento';
 
@@ -35,12 +34,12 @@ const ogImagen = new URL('/og-image.jpg', sitio).href;
     <title>{evento.titulo}</title>
     <meta name="description" content={evento.descripcion} />
     <meta name="robots" content="noindex, nofollow" />
-    <meta name="theme-color" content="#93E6F8" />
+    <meta name="theme-color" content="#000000" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <!-- Con JavaScript, lo que se revela al hacer scroll empieza oculto (ver animaciones.css) -->
     <script is:inline>document.documentElement.classList.add('js');</script>
+    <link rel="preload" href={barlow700} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={lilita400} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={montserrat900i} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={evento.titulo} />
@@ -63,21 +62,19 @@ const ogImagen = new URL('/og-image.jpg', sitio).href;
     <Fondo />
     <Intro />
 
-    <!-- Home (frame "2" de Figma, 412 × 2014). El DOM va en orden de lectura (lectores de pantalla);
-         el orden de capas de Figma lo da --z: portada 1 · ola 2 · cierre 3 · detalles 4 · Yoshi 5 · banner 6 -->
+    <!-- Home (frame "Invitacion" 235:9 de Figma, 412 × 2474). El DOM va en orden de lectura; el orden de
+         capas de Figma lo da --z: fondo inferior 1 · héroe 2 · mensaje y columna 3 -->
     <main class="home" id="home" inert tabindex="-1">
       <h1 class="solo-lectores">{evento.titulo}</h1>
-      <Portada />
-      <!-- 74:280 · Yoshi, con sombra que sigue su silueta -->
-      <Img src={yoshi} ancho={82.514} alt="" class="abs yoshi" style="--x:85.566;--y:380.065;--w:82.514;--h:120.103;--z:5" />
-      <!-- 74:218 · ola -->
-      <img class="abs" src={ola.src} alt="" width={ola.width} height={ola.height} style="--x:-14;--y:835;--w:439;--h:91;--z:2" />
-      <!-- 77:304 · banner raster -->
-      <div class="banner abs" style="--x:15.157;--y:923;--w:381.685;--h:169.638;--z:6" data-revelar>
-        <Img src={banner} ancho={381.685} alt="Familia, risas y ganas de pasarla bien. ¡Estás invitado!" calidad={90} />
+      <Heroe />
+      <FondoInferior />
+      <Mensaje />
+      <!-- 257:329 · columna: placa, datos, separador y cierre, con 51 de separación -->
+      <div class="columna abs" style="--x:0;--y:1361;--w:412;--z:3">
+        <Detalles />
+        <img class="columna__separador" src={separador.src} alt="" width={separador.width} height={separador.height} data-revelar />
+        <Cierre />
       </div>
-      <Detalles />
-      <Cierre />
     </main>
 
     <Musica />
@@ -94,7 +91,7 @@ const ogImagen = new URL('/og-image.jpg', sitio).href;
     position: relative;
     z-index: 20;
     width: var(--ancho);
-    height: calc(2014 * var(--k));
+    height: calc(2474 * var(--k));
     margin: 0 auto;
     background: var(--fondo-home);
     overflow: clip;
@@ -108,43 +105,33 @@ const ogImagen = new URL('/og-image.jpg', sitio).href;
   :global(html.js) .home:not(.cargado) {
     content-visibility: hidden;
   }
-  .home :global(.yoshi) {
-    filter: var(--sombra-yoshi);
-    transform-origin: 50% 100%; /* se mece desde los pies */
-  }
-  /* Entrada: Yoshi salta con rebote y después se balancea ±4° */
-  .home.visible :global(.yoshi) {
-    --giro: 4deg;
-    animation:
-      saltar 800ms var(--ease-out) 200ms both,
-      mecer 2.4s ease-in-out 1s infinite;
-  }
-  /* Banner: sube 24 px y aparece con el rebote leve del resorte */
-  .banner:global(.revelado) {
-    animation: aparecer-subiendo var(--dur-gentle) var(--ease-gentle) both;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .home.visible :global(.yoshi) {
-      animation: none;
-    }
-    .banner:global(.revelado) {
-      animation: encender 400ms var(--ease-out) both;
-    }
-  }
   .home.visible {
     opacity: 1;
     pointer-events: auto;
     transition: opacity var(--dur-dissolve) var(--ease-out);
   }
-  /* Tablet y escritorio: la invitación es una tarjeta sobre el video de la piscina (como Katalina) */
+  .columna {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(51 * var(--k));
+  }
+  .columna__separador {
+    width: calc(356.723 * var(--k));
+    height: calc(12.894 * var(--k));
+  }
+  .columna__separador:global(.revelado) {
+    animation: encender 700ms var(--ease-out) both;
+  }
+  /* Tablet y escritorio: la invitación es una tarjeta sobre el estadio desenfocado (como Katalina) */
   @media (min-width: 600px) {
     .home {
       margin: clamp(24px, 5vh, 56px) auto;
       border-radius: calc(28 * var(--k));
       box-shadow:
-        0 30px 80px -24px rgba(6, 38, 82, 0.45),
-        0 8px 24px -12px rgba(11, 136, 170, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.7);
+        0 30px 80px -24px rgba(0, 0, 0, 0.75),
+        0 8px 28px -10px rgba(255, 192, 61, 0.22),
+        0 0 0 1px rgba(255, 255, 255, 0.12);
     }
   }
 </style>

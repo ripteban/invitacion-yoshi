@@ -1,0 +1,50 @@
+---
+// Mensaje de invitación ("Frame 5" 257:64): texto, separador con estrella y la broma, en columna centrada
+// con 23 de separación. Textos en Barlow Condensed Bold 40/35 con degradado crema → gris.
+import separador from '../assets/svg/separador.svg';
+import { evento } from '../data/evento';
+---
+
+<div class="mensaje abs" style="--x:27.638;--y:1014;--w:356.723;--z:3">
+  <p class="mensaje__texto barlow texto-degradado" data-revelar>{evento.invitacion}</p>
+  <img class="mensaje__separador" src={separador.src} alt="" width={separador.width} height={separador.height} data-revelar />
+  <p class="mensaje__texto mensaje__texto--broma barlow texto-degradado" data-revelar>{evento.broma}</p>
+</div>
+
+<style>
+  .mensaje {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(23 * var(--k));
+  }
+  .mensaje__texto {
+    --degradado: var(--degradado-crema);
+    width: 100%;
+    font-size: calc(40 * var(--k));
+    line-height: calc(35 * var(--k));
+    text-align: center;
+  }
+  .mensaje__texto--broma {
+    width: calc(333.085 * var(--k));
+  }
+  .mensaje__separador {
+    width: 100%;
+    height: calc(12.894 * var(--k));
+  }
+  .mensaje > :global(.revelado) {
+    --subir: 16;
+    animation: aparecer-subiendo 700ms var(--ease-out) both;
+  }
+  .mensaje > :global(.revelado:nth-child(2)) {
+    animation-delay: 120ms;
+  }
+  .mensaje > :global(.revelado:nth-child(3)) {
+    animation-delay: 240ms;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mensaje > :global(.revelado) {
+      animation: encender 400ms var(--ease-out) both;
+    }
+  }
+</style>

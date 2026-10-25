@@ -66,39 +66,62 @@ async function svg(src, ruta) {
   console.log('svg', ruta);
 }
 
-// ---------- Intro (frame 1) ----------
-// Fondo: relleno "cover" centrado en 412 × 917 (se recorta con object-fit en CSS)
-await png(fuente('fondo-intro.png', '15-86_fondo-intro.png'), 'intro/fondo.png', 412);
-await png(join(FIGMA, '74-274_titulo-intro.png'), 'intro/titulo.png', 283.771);
-await png(join(FIGMA, '22-115_bolsa.png'), 'intro/bolsa.png', 330.572);
+// ---------- Diseño "CumpleMania" (página "Invitación WWE 2" de Figma; descargas en figma-export/wwe) ----------
+const WWE = 'figma-export/wwe';
 
-// ---------- Home (frame 2) ----------
-// Portada: relleno "cover" centrado en 415.649 × 926, en (−1.82, −4.06)
-await png(fuente('portada.png', '71-149_portada.png'), 'home/portada.png', 415.649);
-await png(join(FIGMA, '71-147_titulo-home.png'), 'home/titulo.png', 378.536);
-// Retrato: Figma lo muestra al 148.38 % × 148.69 % de su caja (426.874 × 639), desplazado −20.17 % en x.
-// Se recorta exactamente la parte visible; funciona igual con el original entregado si tiene el mismo encuadre.
-await png(fuente('retrato.png', '66-115_retrato.png'), 'home/retrato.png', 426.874, {
-  l: 20.17 / 148.38,
-  t: 0,
-  w: 100 / 148.38,
-  h: 100 / 148.69,
-});
-await png(join(FIGMA, '74-280_yoshi.png'), 'home/yoshi.png', 82.514);
-await png(join(FIGMA, '77-304_banner.png'), 'home/banner.png', 381.685);
-// Cierre: relleno "cover" centrado en 412 × 759
-await png(fuente('fondo-cierre.png', '72-86_fondo-cierre.png'), 'home/cierre.png', 412);
+// Intro (frame "Inicio" 257:282)
+// Fondo del estadio (257:283): render de Figma a 3×, que ya trae los ajustes del relleno (la imagen queda al
+// ~34 % sobre negro; el original es figma-export/wwe/i-fondo-raw1.png)
+await png(join(WWE, 'raw/i-fondo@3x.png'), 'intro/estadio.png', 412);
+// Silueta del campeón (257:490): relleno oscuro de 424 × 612 (1.16× su caja de 366 × 529; es una silueta difusa)
+await png(join(WWE, 'i-silueta.png'), 'intro/silueta.png', 366.243);
 
-// ---------- Íconos de Día / Hora / Lugar (105 × 105) ----------
-await png(join(FIGMA, '84-375_icono-fecha.png'), 'iconos/fecha.png', 105);
-await png(join(FIGMA, '84-382_icono-hora.png'), 'iconos/hora.png', 105);
-await png(join(FIGMA, '84-379_icono-lugar.png'), 'iconos/lugar.png', 105);
+// Héroe de la invitación (frame "Invitacion" 235:9 → "Hero" 235:22)
+// Estadio ("Video" 235:24): render de Figma a 3× de la parte visible (412 × 922), con los ajustes del relleno
+// (exposición, contraste…) que el código de Figma no trae
+await png(join(WWE, 'raw/h-estadio@3x.png'), 'heroe/estadio.png', 412);
+// Avatar: color de la exportación a 4× y transparencia de la de 2× (que trae la caja exacta del nodo),
+// alineadas en figma-export/wwe/raw/*-final@4x.png
+await png(join(WWE, 'raw/avatar-cuerpo-final@4x.png'), 'heroe/avatar-cuerpo.png', 402.846);
+await png(join(WWE, 'raw/avatar-cabeza-final@4x.png'), 'heroe/avatar-cabeza.png', 408.271);
+// Título "CumpleMania" (235:41): Figma muestra la imagen al 190.71 % de alto, desplazada −56.1 %
+await png(join(WWE, 'h-titulo-cumplemania.png'), 'heroe/titulo.png', 399.553, { l: 0, t: 56.1 / 190.71, w: 1, h: 100 / 190.71 });
+// Placa "Eduardo" (235:130): "contain" con la misma proporción que su caja (402 × 134)
+await png(join(WWE, 'h-titulo-eduardo.png'), 'heroe/eduardo.png', 402);
+// Gradas al pie del héroe (235:128): la imagen al 174.07 % de alto desde arriba
+await png(join(WWE, 'h-image4.png'), 'heroe/gradas.png', 412, { l: 0, t: 0, w: 1, h: 100 / 174.07 });
 
-// ---------- SVG ----------
-await svg(join(FIGMA, '22-161_mano.svg'), 'svg/mano.svg');
-await svg(join(FIGMA, '22-175_flecha.svg'), 'svg/flecha.svg');
-await svg(join(FIGMA, '68-139_resplandor.svg'), 'svg/resplandor.svg');
-await svg(join(FIGMA, '74-218_ola.svg'), 'svg/ola.svg');
+// Fondo inferior (252:36): la misma imagen repetida y espejada; se recorta en CSS como Figma
+await png(join(WWE, 'h-image3.png'), 'fondo/gradas.png', 412);
+// Cinturón del cierre (257:278): la imagen al 380.15 % de alto, desplazada −138.81 % (original de 736 px)
+await png(join(WWE, 'raw/cinturon-r2.png'), 'cierre/cinturon.png', 412, { l: 0, t: 138.81 / 380.15, w: 1, h: 100 / 380.15 });
+
+// SVG
+const SVGS = {
+  'i-mano.svg': 'mano.svg',
+  'i-flecha.svg': 'flecha-arriba.svg',
+  'h-flecha.svg': 'flecha-placa.svg',
+  'i-placa-bisel.svg': 'placa-bisel.svg',
+  'i-placa-canal.svg': 'placa-canal.svg',
+  'i-placa-filete.svg': 'placa-filete.svg',
+  'i-placa-cara.svg': 'placa-cara.svg',
+  'h-dato-canal.svg': 'dato-canal.svg',
+  'h-dato-filo.svg': 'dato-filo.svg',
+  'h-dato-cara.svg': 'dato-cara.svg',
+  'h-icono-fecha.svg': 'icono-fecha.svg',
+  'h-icono-lugar.svg': 'icono-lugar.svg',
+  'h-icono-hora.svg': 'icono-hora.svg',
+  'h-separador.svg': 'separador.svg',
+  'h-resplandor.svg': 'resplandor.svg',
+  'h-haz-izq.svg': 'haz-izq.svg',
+  'h-haz-der.svg': 'haz-der.svg',
+  'h-sombra-avatar.svg': 'sombra-avatar.svg',
+  'h-sombra-titulo.svg': 'sombra-titulo.svg',
+  'h-sombra-eduardo.svg': 'sombra-eduardo.svg',
+  'h-decorativo.svg': 'particulas.svg',
+  'h-decorativo-logo.svg': 'logo-wwe.svg',
+};
+for (const [origen, destino] of Object.entries(SVGS)) await svg(join(WWE, origen), `svg/${destino}`);
 
 // ---------- Chicharrones voladores (entrada/chicharrones/chicharron-N.png) ----------
 // Se quita el borde transparente sobrante; Astro genera los WebP con alfa (ver Bolsa.astro).
@@ -114,7 +137,9 @@ if (existsSync(DIR_CHICHARRONES)) {
 // (el más liviano con VMAF ≥ 92 contra el original: visualmente sin pérdida; ver calibrar-videos.mjs).
 // Bucle sin corte: los últimos FUNDIDO segundos se funden con los primeros (el video dura eso menos).
 // Si un archivo ya está más nuevo que su original y que videos.json, no se vuelve a codificar (AV1 tarda).
-import { VIDEOS, CODECS, FUNDIDO, comunes, ffmpeg, duracion } from './videos-config.mjs';
+import { CODECS, FUNDIDO, comunes, ffmpeg, duracion } from './videos-config.mjs';
+// El diseño CumpleMania no usa videos de fondo; para volver a usarlos, importar VIDEOS de videos-config.mjs
+const VIDEOS = [];
 const calibracion = JSON.parse(await readFile('scripts/videos.json', 'utf8'));
 await mkdir('public/medios', { recursive: true });
 for (const [origen, nombre] of VIDEOS) {

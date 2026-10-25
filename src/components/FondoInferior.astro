@@ -1,0 +1,54 @@
+---
+// Fondo de la parte baja ("Frame 2 — Faded" 252:36, 412 × 1545 desde y = 960): la misma imagen de gradas tres
+// veces (la segunda y la tercera espejadas en vertical), desvanecida como en Figma: transparente arriba, opaca al
+// 25 % y al 33 % abajo (máscara de 412 × 1917.2). Cada caja recorta la imagen con los porcentajes de Figma.
+import Img from './Img.astro';
+import gradas from '../assets/fondo/gradas.png';
+
+const cajas = [
+  { y: 0, espejo: false, rh: '223.69%', rt: '-123.71%' },
+  { y: 327.33, espejo: true, rh: '100.06%', rt: '-0.07%' },
+  { y: 1059.106, espejo: true, rh: '100.06%', rt: '-0.07%' },
+];
+---
+
+<div class="fondo-inferior abs" style="--x:0;--y:960;--w:412;--h:1545;--z:1" aria-hidden="true">
+  <div class="fondo-inferior__mascara">
+    {
+      cajas.map(({ y, espejo, rh, rt }, i) => (
+        <div class:list={['fondo-inferior__caja', { espejo }]} style={`--cy:${y};--ch:${i === 0 ? 327.33 : 731.776}`}>
+          <Img src={gradas} ancho={412} alt="" calidad={75} class="recorte" style={`--rh:${rh};--rt:${rt}`} />
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .fondo-inferior {
+    overflow: clip;
+    pointer-events: none;
+  }
+  .fondo-inferior__mascara {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: calc(1463.551 * var(--k));
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 25%, rgba(0, 0, 0, 0.33) 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 25%, rgba(0, 0, 0, 0.33) 100%);
+    -webkit-mask-size: 100% calc(1917.205 * var(--k));
+    mask-size: 100% calc(1917.205 * var(--k));
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+  .fondo-inferior__caja {
+    position: absolute;
+    left: 0;
+    top: calc(var(--cy) * var(--k));
+    width: 100%;
+    height: calc(var(--ch) * var(--k));
+    overflow: hidden;
+  }
+  .espejo {
+    scale: 1 -1;
+  }
+</style>

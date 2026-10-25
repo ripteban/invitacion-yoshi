@@ -1,108 +1,168 @@
 ---
-// "Nos vemos aquí" (72:92) + lista Día / Hora / Lugar (72:94).
-// Columna con los gaps de Figma y texto real, editable en evento.ts. Como en Figma, la lista mide lo
-// que su fila más ancha y va centrada en el frame: si cambia un texto, se vuelve a centrar sola.
-import Img from './Img.astro';
-import fecha from '../assets/iconos/fecha.png';
-import hora from '../assets/iconos/hora.png';
-import lugar from '../assets/iconos/lugar.png';
+// Placa "Nos vemos aquí" (252:54) y los datos Fecha / Lugar / Hora (257:257). Cada dato: ícono en aro dorado +
+// etiqueta (SF Pro Semibold con degradado) y una placa negra cepillada con el valor (SF Pro Regular).
+// Se usa dentro de la columna de index.astro (257:329), que pone las separaciones de Figma.
+import Placa from './Placa.astro';
+import flecha from '../assets/svg/flecha-placa.svg';
+import iconoFecha from '../assets/svg/icono-fecha.svg';
+import iconoLugar from '../assets/svg/icono-lugar.svg';
+import iconoHora from '../assets/svg/icono-hora.svg';
+import canal from '../assets/svg/dato-canal.svg';
+import filo from '../assets/svg/dato-filo.svg';
+import cara from '../assets/svg/dato-cara.svg';
 import { evento } from '../data/evento';
 
-const filas = [
-  { icono: fecha, etiqueta: 'FECHA', valor: evento.fecha },
-  { icono: hora, etiqueta: 'HORA', valor: evento.hora },
-  { icono: lugar, etiqueta: 'LUGAR', valor: evento.lugar },
+const datos = [
+  { icono: iconoFecha, etiqueta: 'Fecha', valor: evento.fecha },
+  { icono: iconoLugar, etiqueta: 'Lugar', valor: evento.lugar },
+  { icono: iconoHora, etiqueta: 'Hora', valor: evento.hora },
+];
+const capas = [
+  { src: canal, x: 2.301, y: 2.301, w: 352.117, h: 69.043 },
+  { src: filo, x: 4.603, y: 4.603, w: 347.514, h: 64.44 },
+  { src: cara, x: 6.904, y: 6.904, w: 342.911, h: 59.837 },
 ];
 ---
 
-<h2 class="encabezado lilita abs" style="--x:0;--y:1130.427;--w:412;--h:48;--z:4" data-revelar>{evento.encabezadoDetalles}</h2>
+<div class="detalles__placa" data-revelar>
+  <Placa style="position:relative;left:0;top:0">
+    <h2 class="detalles__titulo barlow-semi texto-degradado">{evento.encabezadoDetalles}</h2>
+    <img class="detalles__flecha" src={flecha.src} alt="" width={flecha.width} height={flecha.height} />
+  </Placa>
+</div>
 
-<dl class="lista abs" style="--x:206;--y:1216.216;--h:287;--z:4">
+<dl class="detalles__lista">
   {
-    filas.map(({ icono, etiqueta, valor }, i) => (
-      <div class="fila" style={`--i:${i}`} data-revelar>
-        <div class="fila__icono">
-          <Img src={icono} ancho={77.806} />
-        </div>
-        <div class="fila__texto">
-          <dt class="lilita">{etiqueta}</dt>
-          <dd class="barlow">{valor}</dd>
-        </div>
+    datos.map(({ icono, etiqueta, valor }, i) => (
+      <div class="dato" style={`--i:${i}`} data-revelar>
+        <dt class="dato__etiqueta">
+          <span class="dato__icono">
+            <img src={icono.src} alt="" width={icono.width} height={icono.height} />
+          </span>
+          <span class="sf texto-degradado">{etiqueta}</span>
+        </dt>
+        <dd class="dato__placa">
+          {capas.map(({ src, x, y, w, h }) => (
+            <img class="dato__capa" src={src.src} alt="" width={src.width} height={src.height} style={`--cx:${x};--cy:${y};--cw:${w};--ch:${h}`} />
+          ))}
+          <span class="dato__valor sf">{valor}</span>
+        </dd>
       </div>
     ))
   }
 </dl>
 
 <style>
-  .encabezado {
+  .detalles__placa {
+    position: relative;
+    width: calc(356.72 * var(--k));
+    height: calc(81.205 * var(--k));
+  }
+  .detalles__titulo {
+    --degradado: var(--degradado-plata-h);
+    position: absolute;
+    left: 50%;
+    top: calc(13.741 * var(--k));
+    translate: calc(-50% - 23.56 * var(--k)) 0;
     margin: 0;
-    color: var(--navy);
-    font-size: calc(47.38 * var(--k));
-    line-height: calc(47.38 * var(--k));
-    letter-spacing: calc(-1.1845 * var(--k));
-    text-align: center;
+    font-size: calc(41.142 * var(--k));
+    line-height: calc(50.037 * var(--k));
+    font-weight: 600;
     white-space: nowrap;
   }
-  .lista {
+  .detalles__flecha {
+    position: absolute;
+    left: calc(300.58 * var(--k));
+    top: calc(26.27 * var(--k));
+    width: calc(23.361 * var(--k));
+    height: calc(28.66 * var(--k));
+    rotate: 180deg;
+  }
+  .detalles__lista {
     display: flex;
     flex-direction: column;
-    gap: calc(18.031 * var(--k));
-    width: max-content; /* en Figma 345.844 con "Viernes 20 de Noviembre" */
-    translate: -50% 0;
+    gap: calc(60.466 * var(--k));
+    width: calc(356.72 * var(--k));
     margin: 0;
   }
-  .fila {
+  .dato {
     display: flex;
-    gap: calc(22.038 * var(--k));
+    flex-direction: column;
     align-items: center;
-    min-height: calc(83.646 * var(--k));
+    gap: calc(10.356 * var(--k));
   }
-  .fila__icono {
-    position: relative;
-    flex: none;
-    width: calc(77.806 * var(--k));
-    height: calc(77.806 * var(--k));
+  .dato__etiqueta {
+    display: flex;
+    gap: calc(19.094 * var(--k));
+    align-items: center;
+    width: calc(207.425 * var(--k));
   }
-  .fila__texto {
-    color: var(--navy);
+  .dato__etiqueta .texto-degradado {
+    --degradado: var(--degradado-plata);
+    font-size: calc(37.108 * var(--k));
+    line-height: calc(45.132 * var(--k));
+    font-weight: 590;
     white-space: nowrap;
   }
-  dt {
-    font-size: calc(29.051 * var(--k));
-    line-height: calc(31.956 * var(--k));
+  /* Aro de 44.554 con el SVG de 52.302 (incluye su brillo) centrado */
+  .dato__icono {
+    position: relative;
+    flex: none;
+    width: calc(44.554 * var(--k));
+    height: calc(44.554 * var(--k));
   }
-  dd {
-    height: calc(33.741 * var(--k));
+  .dato__icono img {
+    position: absolute;
+    inset: -8.7%;
+    width: 117.4%;
+    height: 117.4%;
+  }
+  .dato__placa {
+    position: relative;
+    width: 100%;
+    height: calc(73.645 * var(--k));
     margin: 0;
-    padding-top: calc(3.005 * var(--k));
-    font-size: calc(27.798 * var(--k));
-    line-height: calc(30.022 * var(--k));
+    filter: var(--sombra-dato);
+  }
+  .dato__capa {
+    position: absolute;
+    left: calc(var(--cx) * var(--k));
+    top: calc(var(--cy) * var(--k));
+    width: calc(var(--cw) * var(--k));
+    height: calc(var(--ch) * var(--k));
+  }
+  .dato__valor {
+    position: absolute;
+    left: 50%;
+    top: calc(20.38 * var(--k));
+    translate: -50% 0;
+    color: var(--texto);
+    font-size: calc(26.466 * var(--k));
+    line-height: calc(32.22 * var(--k));
+    font-weight: 400;
+    white-space: nowrap;
   }
 
-  /* Al revelarse: el encabezado sube y aparece; las filas entran escalonadas cada 120 ms,
-     el ícono hace "pop" con resorte y después se mece, desfasado de los demás */
-  .encabezado:global(.revelado) {
+  /* Al revelarse: la placa sube y aparece; los datos entran escalonados cada 120 ms y el ícono hace "pop" */
+  .detalles__placa:global(.revelado) {
     --subir: 16;
     animation: aparecer-subiendo 600ms var(--ease-out) both;
   }
-  .fila:global(.revelado) {
+  .dato:global(.revelado) {
     --subir: 18;
-    --retraso-fila: calc(var(--i) * 120ms);
-    animation: aparecer-subiendo 600ms var(--ease-out) var(--retraso-fila) both;
+    --retraso-dato: calc(var(--i) * 120ms);
+    animation: aparecer-subiendo 600ms var(--ease-out) var(--retraso-dato) both;
   }
-  .fila:global(.revelado) .fila__icono {
-    --desde: 0.8;
-    --giro: 2deg;
-    animation:
-      entrar-escala var(--dur-gentle) var(--ease-gentle) var(--retraso-fila) both,
-      mecer 2.6s ease-in-out calc(var(--retraso-fila) + var(--dur-gentle) - var(--i) * 0.7s) infinite;
+  .dato:global(.revelado) .dato__icono {
+    --desde: 0.7;
+    animation: entrar-escala var(--dur-gentle) var(--ease-gentle) var(--retraso-dato) both;
   }
   @media (prefers-reduced-motion: reduce) {
-    .encabezado:global(.revelado),
-    .fila:global(.revelado) {
+    .detalles__placa:global(.revelado),
+    .dato:global(.revelado) {
       animation: encender 400ms var(--ease-out) both;
     }
-    .fila:global(.revelado) .fila__icono {
+    .dato:global(.revelado) .dato__icono {
       animation: none;
     }
   }
