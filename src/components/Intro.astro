@@ -3,6 +3,7 @@
 // El lienzo escala con --ui para caber completo en ancho y alto. El estadio va dentro de la intro (además de
 // Fondo.astro) para que la silueta se multiplique sobre él, como en Figma.
 import Img from './Img.astro';
+import VideoFondo from './VideoFondo.astro';
 import Placa from './Placa.astro';
 import Silueta from './Silueta.astro';
 import BotonAbrir from './BotonAbrir.astro';
@@ -13,6 +14,8 @@ import { evento } from '../data/evento';
 <section class="intro" id="intro" aria-label="Abrir la invitación">
   <!-- 257:283 · render de Figma del fondo (412 × 917), en "cover" a pantalla completa -->
   <Img src={estadio} ancho={412} class="llenar cubrir" calidad={85} sizes="max(100vw, 44.93vh)" eager />
+  <!-- Video del estadio, oscurecido como en Figma (la imagen va al ~34 % sobre negro) -->
+  <VideoFondo nombre="fondo-estadio" fondo="fijo" style="filter:brightness(0.34)" />
 
   <div class="intro__lienzo">
     <!-- 257:311 · placa del título -->

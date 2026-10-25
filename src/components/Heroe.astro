@@ -6,6 +6,7 @@
 // avatar y lo que va entre ellos, pero no sobre las gradas ni la placa del nombre: aquí va una sola vez en un
 // contenedor con esas capas, que además aísla las mezclas igual que el frame sobre el fondo negro.
 import Img from './Img.astro';
+import VideoFondo from './VideoFondo.astro';
 import estadio from '../assets/heroe/estadio.png';
 import cuerpo from '../assets/heroe/avatar-cuerpo.png';
 import cabeza from '../assets/heroe/avatar-cabeza.png';
@@ -18,6 +19,7 @@ import hazIzq from '../assets/svg/haz-izq.svg';
 import hazDer from '../assets/svg/haz-der.svg';
 import sombraTitulo from '../assets/svg/sombra-titulo.svg';
 import particulas from '../assets/svg/particulas.svg';
+import sofi from '../assets/svg/sofi.svg';
 import logo from '../assets/svg/logo-wwe.svg';
 import sombraEduardo from '../assets/svg/sombra-eduardo.svg';
 import { evento } from '../data/evento';
@@ -27,8 +29,10 @@ const svg = (s: { src: string; width: number; height: number }) => ({ src: s.src
 
 <div class="heroe abs" style="--x:0;--y:0;--w:412;--h:960;--z:2">
   <div class="heroe__desvanecido abs" style="--x:0;--y:0;--w:412;--h:960">
-  <!-- 235:24–235:26 · estadio (render de Figma con los ajustes del relleno) y filtros de color -->
+  <!-- 235:24–235:26 · estadio: video con pirotecnia (relleno "cover" de la caja de Figma, sin oscurecer) sobre
+       el render de Figma, que se ve mientras carga; y los filtros de color -->
   <Img src={estadio} ancho={412} calidad={85} class="abs" style="--x:0;--y:0;--w:412;--h:922" eager />
+  <VideoFondo nombre="fondo-estadio" fondo="home" class="abs" style="--x:-1.825;--y:-4.065;--w:415.649;--h:926" />
   <div class="heroe__filtro heroe__filtro--saturacion abs" style="--x:0;--y:0;--w:412;--h:922"></div>
   <div class="heroe__filtro heroe__filtro--luz abs" style="--x:0;--y:0;--w:412;--h:922"></div>
   <!-- 235:27 · sombra del avatar -->
@@ -46,8 +50,10 @@ const svg = (s: { src: string; width: number; height: number }) => ({ src: s.src
   </div>
   <!-- 235:41 · título "CumpleMania" (el maestro ya trae el recorte de Figma) -->
   <Img src={titulo} ancho={399.553} alt="" calidad={88} class="heroe__titulo abs" style="--x:6.334;--y:275;--w:399.553;--h:140.553" />
-  <!-- 235:42 · partículas doradas, destellos y letrero superior -->
+  <!-- 235:42 · partículas doradas y destellos (titilan) -->
   <img class="heroe__particulas abs" {...svg(particulas)} style="--x:0;--y:0;--w:412;--h:922" />
+  <!-- 276:518 · parche que tapa el letrero de SoFi Stadium: fijo, sin animación -->
+  <img class="abs" {...svg(sofi)} style="--x:0;--y:0;--w:412;--h:922" />
   <!-- 235:119 · logo -->
   <img class="heroe__logo abs" {...svg(logo)} style="--x:103.97;--y:135.15;--w:197.271;--h:166.812" />
   </div>

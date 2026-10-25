@@ -118,7 +118,8 @@ const SVGS = {
   'h-sombra-avatar.svg': 'sombra-avatar.svg',
   'h-sombra-titulo.svg': 'sombra-titulo.svg',
   'h-sombra-eduardo.svg': 'sombra-eduardo.svg',
-  'h-decorativo.svg': 'particulas.svg',
+  'h-particulas.svg': 'particulas.svg', // partículas y destellos (Decorative 235:42 sin Frame 16)
+  'h-sofi.svg': 'sofi.svg', // Frame 16: parche que tapa el letrero de SoFi Stadium (sin animación)
   'h-decorativo-logo.svg': 'logo-wwe.svg',
 };
 for (const [origen, destino] of Object.entries(SVGS)) await svg(join(WWE, origen), `svg/${destino}`);
@@ -137,9 +138,7 @@ if (existsSync(DIR_CHICHARRONES)) {
 // (el más liviano con VMAF ≥ 92 contra el original: visualmente sin pérdida; ver calibrar-videos.mjs).
 // Bucle sin corte: los últimos FUNDIDO segundos se funden con los primeros (el video dura eso menos).
 // Si un archivo ya está más nuevo que su original y que videos.json, no se vuelve a codificar (AV1 tarda).
-import { CODECS, FUNDIDO, comunes, ffmpeg, duracion } from './videos-config.mjs';
-// El diseño CumpleMania no usa videos de fondo; para volver a usarlos, importar VIDEOS de videos-config.mjs
-const VIDEOS = [];
+import { VIDEOS, CODECS, FUNDIDO, comunes, ffmpeg, duracion } from './videos-config.mjs';
 const calibracion = JSON.parse(await readFile('scripts/videos.json', 'utf8'));
 await mkdir('public/medios', { recursive: true });
 for (const [origen, nombre] of VIDEOS) {

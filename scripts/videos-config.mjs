@@ -8,11 +8,9 @@
 import { execFileSync } from 'node:child_process';
 
 // [archivo entregado en entrada/, nombre publicado en public/medios/]
-export const VIDEOS = [
-  ['Video de Entrada.mp4', 'fondo-intro'],
-  ['Video Inicial.mp4', 'fondo-portada'],
-  ['Video final.mp4', 'fondo-cierre'],
-];
+// Diseño CumpleMania: un solo video, el estadio con pirotecnia, para la intro y el héroe
+// (los de la piscina del diseño de Yoshi eran fondo-intro, fondo-portada y fondo-cierre)
+export const VIDEOS = [['Video estadio.mp4', 'fondo-estadio']];
 
 // Bucle sin corte: los últimos FUNDIDO segundos se funden con los primeros
 export const FUNDIDO = 0.75;
