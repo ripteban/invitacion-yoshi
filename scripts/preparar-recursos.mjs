@@ -5,6 +5,7 @@
 // pide Img.astro). Astro (astro:assets) genera después los WebP finales en varios anchos.
 // Uso: node scripts/preparar-recursos.mjs
 import sharp from 'sharp';
+import { execFileSync } from 'node:child_process';
 import { optimize } from 'svgo';
 import { existsSync, statSync } from 'node:fs';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
@@ -80,10 +81,19 @@ await png(join(WWE, 'i-silueta.png'), 'intro/silueta.png', 366.243);
 // Estadio ("Video" 235:24): render de Figma a 3× de la parte visible (412 × 922), con los ajustes del relleno
 // (exposición, contraste…) que el código de Figma no trae
 await png(join(WWE, 'raw/h-estadio@3x.png'), 'heroe/estadio.png', 412);
-// Avatar: color de la exportación a 4× y transparencia de la de 2× (que trae la caja exacta del nodo),
-// alineadas en figma-export/wwe/raw/*-final@4x.png
-await png(join(WWE, 'raw/avatar-cuerpo-final@4x.png'), 'heroe/avatar-cuerpo.png', 402.846);
-await png(join(WWE, 'raw/avatar-cabeza-final@4x.png'), 'heroe/avatar-cabeza.png', 408.271);
+// Música de fondo (entrada/musica.mp3, como en Katalina): sin el silencio final, volumen de fondo (-21 LUFS),
+// fundidos de entrada/salida incluidos (en iPhone el volumen no se controla desde la página) y AAC para iPhone y
+// Android. Al cambiar la canción, ajustar MUSICA_FIN (segundo donde empieza el silencio final).
+const MUSICA_FIN = 168.6;
+if (existsSync(join(IN, 'musica.mp3'))) {
+  execFileSync('ffmpeg', ['-y', '-v', 'error', '-i', join(IN, 'musica.mp3'), '-af',
+    `atrim=0:${MUSICA_FIN},asetpts=N/SR/TB,loudnorm=I=-21:TP=-2:LRA=9,afade=t=in:d=2.5,afade=t=out:st=${MUSICA_FIN - 3}:d=3`,
+    '-ar', '44100', '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', 'public/medios/musica.m4a']);
+  console.log('música public/medios/musica.m4a');
+}
+// Avatar (280:537, 402.846 × 611.724): foto entregada sin fondo (entrada/avatar.png, 3584 × 4800). Figma la
+// muestra al 164.95 % de ancho y 145.48 % de alto de la caja, desplazada −27.05 % a la izquierda
+await png(join(IN, 'avatar.png'), 'heroe/avatar.png', 402.846, { l: 27.05 / 164.95, t: 0, w: 100 / 164.95, h: 100 / 145.48 });
 // Título "CumpleMania" (235:41): Figma muestra la imagen al 190.71 % de alto, desplazada −56.1 %
 await png(join(WWE, 'h-titulo-cumplemania.png'), 'heroe/titulo.png', 399.553, { l: 0, t: 56.1 / 190.71, w: 1, h: 100 / 190.71 });
 // Placa "Eduardo" (235:130): "contain" con la misma proporción que su caja (402 × 134)

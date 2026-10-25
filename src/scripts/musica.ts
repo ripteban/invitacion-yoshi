@@ -1,4 +1,4 @@
-// Música de fondo. Debe iniciarse dentro del toque a la bolsa (gesto del usuario), si no el
+// Música de fondo. Debe iniciarse dentro del toque a la silueta (gesto del usuario), si no el
 // navegador la bloquea. Se pausa al salir de la pestaña / bloquear el teléfono y se retoma al volver.
 const audio = document.getElementById('musica') as HTMLAudioElement | null;
 const boton = document.getElementById('boton-musica') as HTMLButtonElement | null;
@@ -20,7 +20,7 @@ function reproducir() {
   });
 }
 
-/** Llamar dentro del manejador del toque a la bolsa */
+/** Llamar dentro del manejador del toque a la silueta */
 export function iniciarMusica() {
   if (!audio || quiereMusica) return;
   quiereMusica = true;

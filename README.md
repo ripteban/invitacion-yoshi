@@ -45,7 +45,8 @@ Requiere Node 22.
     desenfocado (`Fondo.astro`). Con mouse, la silueta se acerca y el botón se eleva al pasar el cursor.
 - **Videos de fondo**: este diseño no los usa. El flujo sigue listo (`VideoFondo.astro`, `videos.ts`,
   `scripts/videos-config.mjs`): 1080p en AV1, HEVC y H.264 con la calidad calibrada por VMAF (`npm run calibrar`).
-- **Música** (`Musica.astro`, `musica.ts`): lista para cuando exista `public/medios/musica.m4a`.
+- **Música** (`Musica.astro`, `musica.ts`, el mismo componente de Katalina): `entrada/musica.mp3` → `public/medios/musica.m4a`
+  con `npm run recursos` (volumen de fondo y fundidos). Suena al tocar la silueta; el botón flotante la silencia.
 - **Carga**: la intro baja solo lo suyo (~660 KB sin video); el Home y los chicharrones se precargan en segundo
   plano después del evento `load` (`content-visibility` en `.home` hasta entonces).
 - **Medios** (`public/medios/`): se sirven con `functions/medios/[archivo].js` (Cloudflare Pages Function) porque

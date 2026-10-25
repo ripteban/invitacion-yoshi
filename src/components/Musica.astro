@@ -1,5 +1,5 @@
 ---
-// Música de fondo: empieza al tocar la bolsa (los navegadores no permiten sonido sin un toque previo)
+// Música de fondo (componente de Katalina): empieza al tocar la silueta del campeón (los navegadores no permiten sonido sin un toque previo)
 // y se puede silenciar con el botón flotante. El fundido de entrada viene en el propio archivo
 // (en iPhone el volumen no se puede controlar desde la página).
 // Mientras no exista public/medios/musica.m4a no se muestra nada (musica.ts lo tolera).
@@ -34,7 +34,8 @@ const version = hay ? createHash('sha1').update(readFileSync(archivo)).digest('h
 }
 
 <style>
-  /* Mismo lenguaje que el botón "Toca el churro": píldora amarilla, borde claro e ícono navy */
+  /* Como en Katalina (círculo de vidrio esmerilado), en los colores de CumpleMania: vidrio oscuro, ícono crema y
+     filo dorado */
   .musica {
     --lado: 46px;
     position: fixed;
@@ -45,11 +46,15 @@ const version = hay ? createHash('sha1').update(readFileSync(archivo)).digest('h
     height: var(--lado);
     display: grid;
     place-items: center;
-    border: 1px solid var(--boton-borde);
+    border: 0;
     border-radius: 50%;
-    color: var(--navy);
-    background: var(--boton-degradado);
-    filter: drop-shadow(0 4px 6px rgba(11, 136, 170, 0.3));
+    color: var(--texto);
+    background: rgba(0, 0, 0, 0.55);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    box-shadow:
+      0 8px 22px -8px rgba(0, 0, 0, 0.8),
+      inset 0 0 0 1px rgba(255, 192, 61, 0.45);
     cursor: pointer;
     opacity: 0;
     scale: 0.6;
@@ -66,7 +71,7 @@ const version = hay ? createHash('sha1').update(readFileSync(archivo)).digest('h
     scale: 0.92;
   }
   .musica:focus-visible {
-    outline: 2px solid var(--navy);
+    outline: 2px solid var(--texto);
     outline-offset: 3px;
   }
   /* Ecualizador animado mientras suena */

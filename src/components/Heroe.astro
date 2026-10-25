@@ -10,8 +10,7 @@
 import Img from './Img.astro';
 import VideoFondo from './VideoFondo.astro';
 import estadio from '../assets/heroe/estadio.png';
-import cuerpo from '../assets/heroe/avatar-cuerpo.png';
-import cabeza from '../assets/heroe/avatar-cabeza.png';
+import avatar from '../assets/heroe/avatar.png';
 import titulo from '../assets/heroe/titulo.png';
 import eduardo from '../assets/heroe/eduardo.png';
 import gradas from '../assets/heroe/gradas.png';
@@ -43,10 +42,9 @@ const svg = (s: { src: string; width: number; height: number }) => ({ src: s.src
   <img class="heroe__trama heroe__haz heroe__haz--der abs" {...svg(hazDer)} style="--x:253.27;--y:381.51;--w:167.408;--h:317.071" />
   <!-- 235:40 · sombra del título -->
   <img class="abs" {...svg(sombraTitulo)} style="--x:-93.253;--y:182.374;--w:594.52;--h:287.539" />
-  <!-- 235:32 · avatar: cuerpo (Intersect) y cabeza (Subtract) -->
+  <!-- 280:537 · avatar: la foto ya viene recortada como en Figma (preparar-recursos.mjs), a 4× para pantallas de 3× -->
   <div class="heroe__avatar abs" style="--x:-3.943;--y:366.555;--w:402.846;--h:611.724">
-    <Img src={cuerpo} ancho={402.846} alt="" calidad={88} class="abs" style="--x:0;--y:151.777;--w:402.846;--h:459.947" />
-    <Img src={cabeza} ancho={408.271} alt="" calidad={88} class="abs" style="--x:14.761;--y:0.279;--w:408.271;--h:611.152" />
+    <Img src={avatar} ancho={402.846} alt="" calidad={92} />
   </div>
   <!-- 280:545 · título "CumpleMania": caja de 372.129 centrada; la imagen (399.553, el maestro ya trae el
        recorte vertical de Figma) asoma desde −4.21 % y se recorta a los lados -->
