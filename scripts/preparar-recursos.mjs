@@ -120,7 +120,8 @@ const SVGS = {
   'h-sombra-eduardo.svg': 'sombra-eduardo.svg',
   'h-particulas.svg': 'particulas.svg', // partículas y destellos (Decorative 235:42 sin Frame 16)
   'h-sofi.svg': 'sofi.svg', // Frame 16: parche que tapa el letrero de SoFi Stadium (sin animación)
-  'h-decorativo-logo.svg': 'logo-wwe.svg',
+  'h-decorativo-logo-2.svg': 'logo-wwe.svg', // 280:624, más chico en "Invitacion 2"
+  'h-flecha-guia.svg': 'flecha-guia.svg', // 280:711, botón que invita a bajar
 };
 for (const [origen, destino] of Object.entries(SVGS)) await svg(join(WWE, origen), `svg/${destino}`);
 

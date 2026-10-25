@@ -12,6 +12,7 @@ import lilita400 from '@fontsource/lilita-one/files/lilita-one-latin-400-normal.
 import Fondo from '../components/Fondo.astro';
 import Intro from '../components/Intro.astro';
 import Heroe from '../components/Heroe.astro';
+import BotonGuia from '../components/BotonGuia.astro';
 import FondoInferior from '../components/FondoInferior.astro';
 import Mensaje from '../components/Mensaje.astro';
 import Detalles from '../components/Detalles.astro';
@@ -62,15 +63,16 @@ const ogImagen = new URL('/og-image.jpg', sitio).href;
     <Fondo />
     <Intro />
 
-    <!-- Home (frame "Invitacion" 235:9 de Figma, 412 × 2474). El DOM va en orden de lectura; el orden de
-         capas de Figma lo da --z: fondo inferior 1 · héroe 2 · mensaje y columna 3 -->
+    <!-- Home (frame "Invitacion 2" 280:519 de Figma, 412 × 2281). El DOM va en orden de lectura; el orden de
+         capas de Figma lo da --z: fondo inferior 1 · héroe 2 · mensaje y columna 3 · botón guía 4 -->
     <main class="home" id="home" inert tabindex="-1">
       <h1 class="solo-lectores">{evento.titulo}</h1>
       <Heroe />
+      <BotonGuia />
       <FondoInferior />
       <Mensaje />
-      <!-- 257:329 · columna: placa, datos, separador y cierre, con 51 de separación -->
-      <div class="columna abs" style="--x:0;--y:1361;--w:412;--z:3">
+      <!-- 280:643 · columna: placa, datos, separador y cierre, con 51 de separación -->
+      <div class="columna abs" style="--x:0;--y:1141;--w:412;--z:3">
         <Detalles />
         <img class="columna__separador" src={separador.src} alt="" width={separador.width} height={separador.height} data-revelar />
         <Cierre />
@@ -91,7 +93,7 @@ const ogImagen = new URL('/og-image.jpg', sitio).href;
     position: relative;
     z-index: 20;
     width: var(--ancho);
-    height: calc(2474 * var(--k));
+    height: calc(2281 * var(--k));
     margin: 0 auto;
     background: var(--fondo-home);
     overflow: clip;

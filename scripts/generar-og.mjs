@@ -1,5 +1,5 @@
 // Genera public/og-image.jpg (1200 × 630, vista previa de WhatsApp) a partir del héroe real de la invitación:
-// captura el logo y el título "CumpleMania" con el avatar (y de 150 a 560 en Figma) a 3× y lo centra sobre una
+// captura el logo y el título "CumpleMania" con el avatar (y de 0 a 400 de la invitación) a 3× y lo centra sobre una
 // versión desenfocada y oscurecida de la misma captura, que llena los costados.
 // Requiere el sitio servido. Uso: node scripts/generar-og.mjs [url]   (por defecto http://localhost:4321)
 import { chromium } from 'playwright';
@@ -7,12 +7,12 @@ import sharp from 'sharp';
 
 const URL = process.argv[2] ?? 'http://localhost:4321';
 const W = 1200, H = 630;
-const DESDE = 150, HASTA = 560; // franja del héroe, en px de diseño
+const DESDE = 0, HASTA = 400; // franja de la invitación, en px de diseño (el héroe empieza 188 más arriba)
 
 const b = await chromium.launch();
 const p = await b.newPage({ viewport: { width: 412, height: 917 }, deviceScaleFactor: 3 });
 await p.goto(URL, { waitUntil: 'networkidle' });
-await p.addStyleTag({ content: '*, *::before, *::after { animation: none !important; transition: none !important; }' });
+await p.addStyleTag({ content: '*, *::before, *::after { animation: none !important; transition: none !important; } .guia { display: none !important; }' });
 await p.evaluate(async () => {
   document.getElementById('intro')?.remove();
   document.body.classList.remove('bloqueado');

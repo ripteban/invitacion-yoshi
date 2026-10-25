@@ -27,7 +27,8 @@ import { evento } from '../data/evento';
 const svg = (s: { src: string; width: number; height: number }) => ({ src: s.src, width: s.width, height: s.height, alt: '' });
 ---
 
-<div class="heroe abs" style="--x:0;--y:0;--w:412;--h:960;--z:2">
+<!-- Frame "Invitacion 2" (280:519): el héroe sube 188 y oculta su parte de arriba (letrero y SoFi) -->
+<div class="heroe abs" style="--x:0;--y:-188;--w:412;--h:960;--z:2">
   <div class="heroe__desvanecido abs" style="--x:0;--y:0;--w:412;--h:960">
   <!-- 235:24–235:26 · estadio: video con pirotecnia (relleno "cover" de la caja de Figma, sin oscurecer) sobre
        el render de Figma, que se ve mientras carga; y los filtros de color -->
@@ -42,20 +43,23 @@ const svg = (s: { src: string; width: number; height: number }) => ({ src: s.src
   <img class="heroe__trama heroe__haz abs" {...svg(hazIzq)} style="--x:-8.73;--y:381.51;--w:167.408;--h:317.071" />
   <img class="heroe__trama heroe__haz heroe__haz--der abs" {...svg(hazDer)} style="--x:253.27;--y:381.51;--w:167.408;--h:317.071" />
   <!-- 235:40 · sombra del título -->
-  <img class="abs" {...svg(sombraTitulo)} style="--x:-93.253;--y:181.374;--w:594.52;--h:287.539" />
+  <img class="abs" {...svg(sombraTitulo)} style="--x:-93.253;--y:182.374;--w:594.52;--h:287.539" />
   <!-- 235:32 · avatar: cuerpo (Intersect) y cabeza (Subtract) -->
   <div class="heroe__avatar abs" style="--x:-3.943;--y:366.555;--w:402.846;--h:611.724">
     <Img src={cuerpo} ancho={402.846} alt="" calidad={88} class="abs" style="--x:0;--y:151.777;--w:402.846;--h:459.947" />
     <Img src={cabeza} ancho={408.271} alt="" calidad={88} class="abs" style="--x:14.761;--y:0.279;--w:408.271;--h:611.152" />
   </div>
-  <!-- 235:41 · título "CumpleMania" (el maestro ya trae el recorte de Figma) -->
-  <Img src={titulo} ancho={399.553} alt="" calidad={88} class="heroe__titulo abs" style="--x:6.334;--y:275;--w:399.553;--h:140.553" />
+  <!-- 280:545 · título "CumpleMania": caja de 372.129 centrada; la imagen (399.553, el maestro ya trae el
+       recorte vertical de Figma) asoma desde −4.21 % y se recorta a los lados -->
+  <div class="heroe__titulo abs" style="--x:19.936;--y:276;--w:372.129;--h:140.553">
+    <Img src={titulo} ancho={399.553} alt="" calidad={88} class="abs" style="--x:-15.667;--y:0;--w:399.553;--h:140.553" />
+  </div>
   <!-- 235:42 · partículas doradas y destellos (titilan) -->
   <img class="heroe__particulas abs" {...svg(particulas)} style="--x:0;--y:0;--w:412;--h:922" />
   <!-- 276:518 · parche que tapa el letrero de SoFi Stadium: fijo, sin animación -->
   <img class="abs" {...svg(sofi)} style="--x:0;--y:0;--w:412;--h:922" />
   <!-- 235:119 · logo -->
-  <img class="heroe__logo abs" {...svg(logo)} style="--x:103.97;--y:135.15;--w:197.271;--h:166.812" />
+  <img class="heroe__logo abs" {...svg(logo)} style="--x:142.558;--y:184.064;--w:122.659;--h:103.72" />
   </div>
   <!-- 235:126 · gradas al pie, al 34 % y desvanecidas hacia abajo -->
   <div class="heroe__gradas abs" style="--x:0;--y:828;--w:412;--h:132">
@@ -85,9 +89,12 @@ const svg = (s: { src: string; width: number; height: number }) => ({ src: s.src
     opacity: 0.13;
     mix-blend-mode: saturation;
   }
+  .heroe__titulo {
+    overflow: clip;
+  }
   .heroe__filtro--luz {
     background: black;
-    opacity: 0.2;
+    opacity: 0.61;
     mix-blend-mode: soft-light;
   }
   .heroe__trama {
@@ -101,7 +108,7 @@ const svg = (s: { src: string; width: number; height: number }) => ({ src: s.src
   }
 
   /* Entrada al terminar el fundido de la intro y luego en espera */
-  :global(.home.visible) .heroe :global(.heroe__titulo) {
+  :global(.home.visible) .heroe__titulo {
     --desde: 0.85;
     animation:
       entrar-escala var(--dur-gentle) var(--ease-gentle) both,
@@ -134,7 +141,8 @@ const svg = (s: { src: string; width: number; height: number }) => ({ src: s.src
   }
   @media (prefers-reduced-motion: reduce) {
     :global(.home.visible) .heroe :is(.heroe__avatar, .heroe__resplandor, .heroe__haz, .heroe__particulas, .heroe__logo),
-    :global(.home.visible) .heroe :global(:is(.heroe__titulo, .heroe__nombre)) {
+    :global(.home.visible) .heroe__titulo,
+    :global(.home.visible) .heroe :global(.heroe__nombre) {
       animation: none;
     }
   }
