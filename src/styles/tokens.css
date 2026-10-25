@@ -27,6 +27,14 @@
   --dur-dissolve: 300ms;
 }
 
+/* linear() llegó a Safari en iOS 17.2: antes (p. ej. iPhone 8 con iOS 16) toda animación que lo usa se anula.
+   Ahí se usa una cúbica con un rebote parecido. */
+@supports not (transition-timing-function: linear(0, 1)) {
+  :root {
+    --ease-gentle: cubic-bezier(0.34, 1.45, 0.64, 1);
+  }
+}
+
 /* ---------- Breakpoints (si se cambian, actualizar también "sizes" en Img.astro) ----------
    Igual que Katalina:
    Móvil (< 600 px): la invitación ocupa todo el ancho, como en Figma.

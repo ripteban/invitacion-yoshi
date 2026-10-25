@@ -74,6 +74,7 @@ const svg = (s: { src: string; width: number; height: number }) => ({ src: s.src
 
 <style>
   .heroe {
+    overflow: hidden; /* respaldo para Safari < 16 */
     overflow: clip;
   }
   .heroe__desvanecido {
@@ -90,6 +91,7 @@ const svg = (s: { src: string; width: number; height: number }) => ({ src: s.src
     mix-blend-mode: saturation;
   }
   .heroe__titulo {
+    overflow: hidden; /* respaldo para Safari < 16 */
     overflow: clip;
   }
   .heroe__filtro--luz {
@@ -101,6 +103,7 @@ const svg = (s: { src: string; width: number; height: number }) => ({ src: s.src
     mix-blend-mode: screen;
   }
   .heroe__gradas {
+    overflow: hidden; /* respaldo para Safari < 16 */
     overflow: clip;
     opacity: 0.34;
     -webkit-mask-image: linear-gradient(to bottom, #000 38.86%, transparent 100%);

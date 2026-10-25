@@ -101,6 +101,7 @@ const ogUrl = new URL('/', sitio).href;
     height: calc(2281 * var(--k));
     margin: 0 auto;
     background: var(--fondo-home);
+    overflow: hidden; /* respaldo para Safari < 16 */
     overflow: clip;
     opacity: 0;
     pointer-events: none;

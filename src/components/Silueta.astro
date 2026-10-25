@@ -37,6 +37,7 @@ const piezas = await Promise.all(
 
 <style>
   .silueta {
+    overflow: hidden; /* respaldo para Safari < 16 */
     overflow: clip;
     cursor: pointer;
     mix-blend-mode: multiply;
