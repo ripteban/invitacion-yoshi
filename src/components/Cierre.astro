@@ -54,11 +54,13 @@ import { evento } from '../data/evento';
     text-align: center;
     white-space: nowrap;
   }
+  /* Centrado con left/right y no con translate: la animación de entrada usa translate y lo pisaba */
   .cierre__subtitulo {
     position: absolute;
-    left: calc(162.03 * var(--k));
+    left: 0;
+    right: 0;
     top: calc(141.52 * var(--k));
-    translate: -50% 0;
+    text-align: center;
     color: var(--blanco);
     font-size: calc(25.001 * var(--k));
     line-height: calc(26.251 * var(--k));
