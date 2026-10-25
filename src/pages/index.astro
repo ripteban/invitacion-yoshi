@@ -22,9 +22,13 @@ import Musica from '../components/Musica.astro';
 import separador from '../assets/svg/separador.svg';
 
 import { evento } from '../data/evento';
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 
 const sitio = Astro.site ?? new URL(Astro.url.origin);
-const ogImagen = new URL('/og-image.jpg', sitio).href;
+// Versión según el contenido: WhatsApp y Facebook guardan la imagen por URL, así que si cambia, cambia la URL
+const ogVersion = createHash('sha1').update(readFileSync('public/og-image.jpg')).digest('hex').slice(0, 8);
+const ogImagen = new URL(`/og-image.jpg?v=${ogVersion}`, sitio).href;
 const ogUrl = new URL('/', sitio).href;
 ---
 

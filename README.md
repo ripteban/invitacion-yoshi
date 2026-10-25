@@ -19,7 +19,7 @@ Requiere Node 22.
 |---|---|
 | Textos: fecha, hora, lugar, frases, título y descripción de WhatsApp | [`src/data/evento.ts`](src/data/evento.ts) |
 | Imágenes, chicharrones, videos o música | Dejar el archivo en `entrada/` y correr `npm run recursos` (ver `scripts/preparar-recursos.mjs`). Si cambia un video, antes `npm run calibrar` (tarda varios minutos) |
-| Imagen de vista previa de WhatsApp | `npm run og` → `public/og-image.jpg` |
+| Imagen de vista previa de WhatsApp | `public/og-image.jpg` (1200 × 630): el "Frame 17" (287:719) de Figma exportado a 4×. `npm run og` genera otra a partir del héroe |
 | URL pública (la usa la vista previa de WhatsApp) | `site` en `astro.config.mjs` |
 
 ## Cómo está hecho
