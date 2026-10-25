@@ -1,7 +1,7 @@
 // Textos de la invitación. Para cambiar un dato basta con editar aquí.
 export const evento = {
   festejado: 'Eduardo',
-  titulo: 'CumpleMania de Eduardo',
+  titulo: 'Cumpleaños de Eduardo', // pestaña del navegador y título de WhatsApp
   descripcion: 'CumpleMania de Eduardo · Viernes 20 de noviembre · 3:30 p.m. · Rancho Las 3 Flores', // vista previa de WhatsApp
 
   // Intro
