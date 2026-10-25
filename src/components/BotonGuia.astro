@@ -1,0 +1,52 @@
+---
+// Botón guía (280:711): píldora con flecha hacia abajo al costado del héroe que invita a seguir bajando.
+// En Figma es la flecha "arrow.up" (42.769 × 85.538) rotada 180°. Al tocarla baja con suavidad hasta el mensaje.
+import flecha from '../assets/svg/flecha-guia.svg';
+---
+
+<button class="guia abs" type="button" aria-label="Ver los detalles de la invitación" style="--x:350.116;--y:285;--w:42.769;--h:85.538;--z:4">
+  <img src={flecha.src} alt="" width={flecha.width} height={flecha.height} />
+</button>
+
+<script>
+  const boton = document.querySelector<HTMLButtonElement>('.guia');
+  const destino = document.getElementById('mensaje');
+  const reducido = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  boton?.addEventListener('click', () => destino?.scrollIntoView({ behavior: reducido ? 'auto' : 'smooth', block: 'start' }));
+</script>
+
+<style>
+  .guia {
+    cursor: pointer;
+  }
+  .guia img {
+    width: 100%;
+    height: 100%;
+    rotate: 180deg;
+  }
+  .guia:focus-visible {
+    outline: calc(2 * var(--k)) solid var(--texto);
+    outline-offset: calc(3 * var(--k));
+    border-radius: calc(20 * var(--k));
+  }
+  /* Aparece tras la entrada del héroe y luego sube y baja para llamar la atención */
+  :global(.home.visible) .guia {
+    --alto: 5;
+    animation:
+      encender 600ms var(--ease-out) 900ms both,
+      flotar-suave 1.6s ease-in-out 1.5s infinite;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .guia img {
+      transition: scale 200ms var(--ease-out);
+    }
+    .guia:hover img {
+      scale: 1.08;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.home.visible) .guia {
+      animation: encender 400ms var(--ease-out) both;
+    }
+  }
+</style>
