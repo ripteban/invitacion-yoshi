@@ -75,7 +75,7 @@ node scripts/qa-peso.mjs http://localhost:4322         # presupuesto de peso
    - Build output directory: `dist`
    - Variable de entorno: `NODE_VERSION` = `22`
 4. **Save and Deploy**. La carpeta `functions/` se detecta sola.
-5. Si la URL final no es `https://invitacion-yoshi.pages.dev`, actualizar `site` en `astro.config.mjs` y
+5. Si la URL final no es `https://fiesta-eduardo.pages.dev`, actualizar `site` en `astro.config.mjs` y
    publicar de nuevo (la vista previa de WhatsApp usa esa URL).
 
 Cada push a `main` vuelve a publicar.

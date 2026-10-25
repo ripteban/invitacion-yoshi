@@ -25,6 +25,7 @@ import { evento } from '../data/evento';
 
 const sitio = Astro.site ?? new URL(Astro.url.origin);
 const ogImagen = new URL('/og-image.jpg', sitio).href;
+const ogUrl = new URL('/', sitio).href;
 ---
 
 <!doctype html>
@@ -43,11 +44,15 @@ const ogImagen = new URL('/og-image.jpg', sitio).href;
     <link rel="preload" href={lilita400} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={ogUrl} />
+    <meta property="og:site_name" content={evento.titulo} />
     <meta property="og:title" content={evento.titulo} />
     <meta property="og:description" content={evento.descripcion} />
     <meta property="og:image" content={ogImagen} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:alt" content="CumpleMania de Eduardo" />
     <meta property="og:locale" content="es_SV" />
     <meta name="twitter:card" content="summary_large_image" />
 

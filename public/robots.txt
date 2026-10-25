@@ -1,2 +1,19 @@
+# Los buscadores no indexan la invitación (también hay noindex en la página y en _headers),
+# pero los lectores de vista previa de WhatsApp, Facebook, Telegram y X sí pueden leerla.
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Facebot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
 User-agent: *
 Disallow: /
