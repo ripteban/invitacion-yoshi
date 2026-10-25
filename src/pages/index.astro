@@ -39,7 +39,11 @@ const ogUrl = new URL('/', sitio).href;
     <meta name="theme-color" content="#000000" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <!-- Con JavaScript, lo que se revela al hacer scroll empieza oculto (ver animaciones.css) -->
-    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      // Safari y todos los navegadores de iPhone (WebKit): no aplican mix-blend-mode sobre video (ver Heroe.astro)
+      if (/AppleWebKit/.test(navigator.userAgent) && !/Chrome|Chromium|Android/.test(navigator.userAgent)) document.documentElement.classList.add('webkit');
+    </script>
     <link rel="preload" href={barlow700} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={lilita400} as="font" type="font/woff2" crossorigin />
 

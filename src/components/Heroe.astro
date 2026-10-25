@@ -32,8 +32,8 @@ const svg = (s: { src: string; width: number; height: number }) => ({ src: s.src
   <div class="heroe__desvanecido abs" style="--x:0;--y:0;--w:412;--h:960">
   <!-- 235:24–235:26 · estadio: video con pirotecnia (relleno "cover" de la caja de Figma, sin oscurecer) sobre
        el render de Figma, que se ve mientras carga; y los filtros de color -->
-  <Img src={estadio} ancho={412} calidad={85} class="abs" style="--x:0;--y:0;--w:412;--h:922" eager />
-  <VideoFondo nombre="fondo-estadio" fondo="home" class="abs" style="--x:-1.825;--y:-4.065;--w:415.649;--h:926" />
+  <Img src={estadio} ancho={412} calidad={85} class="heroe__estadio abs" style="--x:0;--y:0;--w:412;--h:922" eager />
+  <VideoFondo nombre="fondo-estadio" fondo="home" class="heroe__estadio abs" style="--x:-1.825;--y:-4.065;--w:415.649;--h:926" />
   <div class="heroe__filtro heroe__filtro--saturacion abs" style="--x:0;--y:0;--w:412;--h:922"></div>
   <div class="heroe__filtro heroe__filtro--luz abs" style="--x:0;--y:0;--w:412;--h:922"></div>
   <!-- 235:27 · sombra del avatar -->
@@ -101,6 +101,15 @@ const svg = (s: { src: string; width: number; height: number }) => ({ src: s.src
   }
   .heroe__trama {
     mix-blend-mode: screen;
+  }
+  /* Safari (y todo navegador de iPhone) no mezcla capas sobre un <video>: en su lugar el propio estadio lleva la
+     cadena de filtros más cercana a "rojo 13 % saturación + negro 70 % luz suave" (ajustada sobre el render del
+     estadio: error medio 7/255 contra 32 sin filtro) */
+  :global(html.webkit) .heroe__filtro {
+    display: none;
+  }
+  :global(html.webkit) .heroe :global(.heroe__estadio) {
+    filter: saturate(1.34) contrast(1.28) brightness(0.68);
   }
   .heroe__gradas {
     overflow: hidden; /* respaldo para Safari < 16 */
