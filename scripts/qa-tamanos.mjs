@@ -1,6 +1,6 @@
 // QA de tamaños: en cada ancho y alto revisa que la intro quepa completa, que no haya scroll horizontal,
 // que el Home tenga el ancho de los breakpoints de tokens.css (pantalla completa en móvil, tarjeta
-// centrada en tablet y escritorio), que escale exacto (2014 × ancho / 412) y que ningún texto se salga.
+// centrada en tablet y escritorio), que escale exacto (2474 × ancho / 412) y que ningún texto se salga.
 // Guarda una captura de la intro por tamaño y una hoja de contacto en qa/capturas/tamanos.png; de
 // tablet y escritorio también el Home abierto (qa/capturas/escritorio.png).
 // Uso: node scripts/qa-tamanos.mjs [url]   (por defecto http://localhost:4321)
@@ -44,7 +44,7 @@ for (const [w, h] of [...anchos, ...altos, ...anchas]) {
     };
     return {
       lienzo: caja('.intro__lienzo'),
-      bolsa: caja('.bolsa'),
+      silueta: caja('.silueta'),
       boton: caja('#boton-abrir'),
       scroll: document.documentElement.scrollWidth,
     };
@@ -63,7 +63,7 @@ for (const [w, h] of [...anchos, ...altos, ...anchas]) {
     document.body.classList.remove('bloqueado');
     const el = document.getElementById('home');
     el.classList.add('visible');
-    const textos = [...el.querySelectorAll('h2, p, dt, dd')].map((t) => {
+    const textos = [...el.querySelectorAll('h2, p, dt, dd')].filter((t) => !t.classList.contains('solo-lectores')).map((t) => {
       const r = t.getBoundingClientRect();
       return { texto: t.textContent.trim(), l: r.left, r: r.right };
     });
@@ -73,7 +73,7 @@ for (const [w, h] of [...anchos, ...altos, ...anchas]) {
   const ancho = anchoEsperado(w, h);
   if (Math.abs(home.ancho - ancho) > 1) falla(`home: ancho ${home.ancho.toFixed(1)} (esperado ${ancho.toFixed(1)})`);
   if (Math.abs(home.x - (w - home.ancho) / 2) > 1) falla(`home: no está centrado (x ${home.x.toFixed(1)})`);
-  const esperado = (2014 * home.ancho) / 412;
+  const esperado = (2474 * home.ancho) / 412;
   if (Math.abs(home.alto - esperado) > 1) falla(`home: alto ${home.alto} (esperado ${esperado.toFixed(1)})`);
   if (home.scroll > w) falla(`home: scroll horizontal (${home.scroll} px)`);
   const [x0, x1] = [home.x, home.x + home.ancho];

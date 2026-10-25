@@ -1,0 +1,41 @@
+---
+// Placa negra con filo dorado de Figma ("Confirmación · placa final"), 356.72 × 81.205.
+// Capas: bisel exterior (opcional), canal negro, filete interior y cara negra, en sus posiciones exactas.
+// El contenido (texto, flecha) va en el slot, posicionado por quien la usa.
+import bisel from '../assets/svg/placa-bisel.svg';
+import canal from '../assets/svg/placa-canal.svg';
+import filete from '../assets/svg/placa-filete.svg';
+import cara from '../assets/svg/placa-cara.svg';
+
+interface Props {
+  /** etiqueta: 'div' o 'button' (el botón de la intro) */
+  as?: 'div' | 'button';
+  conBisel?: boolean;
+  class?: string;
+  style?: string;
+  id?: string;
+}
+const { as: Etiqueta = 'div', conBisel = true, class: clase = '', style, id } = Astro.props;
+const capas = [
+  ...(conBisel ? [{ src: bisel, x: 0, y: 0, w: 356.72, h: 81.205 }] : []),
+  { src: canal, x: 2.9, y: 2.9, w: 350.92, h: 75.404 },
+  { src: filete, x: 5.8, y: 5.8, w: 345.119, h: 69.604 },
+  { src: cara, x: 7.25, y: 7.25, w: 342.219, h: 66.704 },
+];
+---
+
+<Etiqueta class={`placa abs ${clase}`} style={`--w:356.72;--h:81.205;${style ?? ''}`} id={id} type={Etiqueta === 'button' ? 'button' : undefined}>
+  {capas.map(({ src, x, y, w, h }) => <img class="placa__capa" src={src.src} alt="" width={src.width} height={src.height} style={`--cx:${x};--cy:${y};--cw:${w};--ch:${h}`} />)}
+  <slot />
+</Etiqueta>
+
+<style>
+  .placa__capa {
+    position: absolute;
+    left: calc(var(--cx) * var(--k));
+    top: calc(var(--cy) * var(--k));
+    width: calc(var(--cw) * var(--k));
+    height: calc(var(--ch) * var(--k));
+    pointer-events: none;
+  }
+</style>

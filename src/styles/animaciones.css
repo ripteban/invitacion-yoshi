@@ -86,7 +86,18 @@
   }
 }
 
-/* Pulso de opacidad (sombra del título) */
+/* Partículas doradas: brillan y se apagan */
+@keyframes titilar-suave {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* Pulso de opacidad (resplandor y haces de luz) */
 @keyframes pulso-opacidad {
   0%,
   100% {

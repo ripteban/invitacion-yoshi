@@ -41,7 +41,7 @@ await page.waitForLoadState('networkidle');
 await page.waitForTimeout(1500);
 console.log(`Antes de abrir, con el Home ya precargado: ${kb(sinVideos())}`);
 
-await page.tap('.bolsa', { force: true });
+await page.tap('.silueta', { force: true });
 await page.waitForSelector('#intro', { state: 'detached' });
 for (let i = 0; i < 12; i++) {
   await page.mouse.wheel(0, 200);

@@ -1,30 +1,32 @@
 ---
-// Intro (frame "1" de Figma, 412 × 917): bolsa por abrir.
-// El lienzo escala con --ui para caber completo en ancho y alto. El fondo (Fondo.astro) va aparte y
-// cubre toda la pantalla: en 412 × 917 coincide exactamente con el relleno "cover" de Figma.
+// Intro (frame "Inicio" 257:282 de Figma, 412 × 917): revelar al campeón.
+// El lienzo escala con --ui para caber completo en ancho y alto. El estadio va dentro de la intro (además de
+// Fondo.astro) para que la silueta se multiplique sobre él, como en Figma.
 import Img from './Img.astro';
-import Bolsa from './Bolsa.astro';
+import Placa from './Placa.astro';
+import Silueta from './Silueta.astro';
 import BotonAbrir from './BotonAbrir.astro';
-import titulo from '../assets/intro/titulo.png';
+import estadio from '../assets/intro/estadio.png';
 import { evento } from '../data/evento';
 ---
 
 <section class="intro" id="intro" aria-label="Abrir la invitación">
+  <!-- 257:283 · render de Figma del fondo (412 × 917), en "cover" a pantalla completa -->
+  <Img src={estadio} ancho={412} class="llenar cubrir" calidad={85} sizes="max(100vw, 44.93vh)" eager />
+
   <div class="intro__lienzo">
-    <!-- 74:274 · título raster -->
-    <Img src={titulo} ancho={283.771} alt="¡Se armó la fiesta!" escala="intro" calidad={90} class="abs titulo-intro" style="--x:64.115;--y:67;--w:283.771;--h:148.431" eager />
+    <!-- 257:311 · placa del título -->
+    <Placa class="titulo-intro" style="--x:27.64;--y:45.03">
+      <p class="titulo-intro__texto barlow">{evento.tituloIntro}</p>
+    </Placa>
 
-    <!-- 22:111 y 22:112 · rayitas amarillas (centradas en la caja que reporta Figma) -->
-    <span class="rayita abs anim-titilar" style="--x:15.467;--y:141.986;--w:9.364;--h:27.155;rotate:-55deg"></span>
-    <span class="rayita abs anim-titilar" style="--x:385.294;--y:95.717;--w:9.364;--h:27.155;rotate:34deg;--retraso:-0.8s"></span>
-
-    <!-- 22:110 · instrucción, rotada −2° -->
-    <p class="instruccion lilita abs" style="--x:19.16;--y:224.088;--w:373.609;--h:55.245">
+    <!-- 257:288 · instrucción, rotada −2° -->
+    <p class="instruccion lilita abs" style="--x:19.16;--y:134.888;--w:373.609;--h:55.245">
       <span>{evento.instruccion[0]}</span>
       <span>{evento.instruccion[1]}</span>
     </p>
 
-    <Bolsa />
+    <Silueta />
     <BotonAbrir />
   </div>
 </section>
@@ -37,6 +39,7 @@ import { evento } from '../data/evento';
     z-index: 40;
     display: grid;
     place-items: center;
+    background: var(--fondo-intro);
     overflow: hidden;
   }
   .intro__lienzo {
@@ -44,12 +47,22 @@ import { evento } from '../data/evento';
     width: calc(412 * var(--k));
     height: calc(917 * var(--k));
   }
+  .titulo-intro__texto {
+    position: absolute;
+    left: 50%;
+    top: calc(19 * var(--k));
+    translate: calc(-50% + 0.5 * var(--k)) 0;
+    color: var(--texto);
+    font-size: calc(44.886 * var(--k));
+    line-height: calc(38.153 * var(--k));
+    white-space: nowrap;
+  }
   /* Rebote leve de entrada al cargar */
   .intro :global(.titulo-intro) {
     animation: entrar-escala var(--dur-gentle) var(--ease-gentle) 150ms both;
   }
   /* Al abrir, los bucles se congelan en su pose actual para que GSAP siga desde ahí sin saltos */
-  .intro.abriendo :global(:is(.anim-flotar, .anim-flotar-suave, .anim-respirar, .anim-tocar, .anim-titilar)) {
+  .intro.abriendo :global(:is(.anim-flotar, .anim-flotar-suave, .anim-respirar, .anim-tocar)) {
     animation-play-state: paused;
   }
   @media (prefers-reduced-motion: reduce) {
@@ -57,15 +70,14 @@ import { evento } from '../data/evento';
       animation: none;
     }
   }
-  /* Capas de chicharrones voladores (las crea scripts/chicharrones.ts al tocar) */
+  /* Capas de piezas voladoras (las crea scripts/chicharrones.ts al tocar) */
   :global(.chicharrones) {
     position: absolute;
     inset: 0;
     pointer-events: none;
   }
-  /* Atrás: dentro del lienzo, detrás de todo menos el fondo, levemente desenfocadas.
-     El desenfoque va en cada pieza (capa propia por will-change): en toda la capa obligaba a
-     repintarla en cada cuadro y bajaba de ~59 a ~55 fps con la CPU 4× más lenta. */
+  /* Atrás: dentro del lienzo, levemente desenfocadas. El desenfoque va en cada pieza (capa propia por
+     will-change): en toda la capa obligaba a repintarla en cada cuadro. */
   :global(.chicharrones--detras .chicharron) {
     filter: blur(calc(1.5 * var(--k)));
   }
@@ -75,17 +87,13 @@ import { evento } from '../data/evento';
     z-index: 50;
     overflow: hidden;
   }
-  .rayita {
-    background: var(--sol);
-    border-radius: calc(11.162 * var(--k)) calc(11.162 * var(--k)) calc(6.378 * var(--k)) calc(6.378 * var(--k));
-  }
   .instruccion {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     rotate: -2deg;
-    color: var(--navy);
+    color: var(--blanco);
     font-size: calc(28.84 * var(--k));
     line-height: calc(27.398 * var(--k));
     text-align: center;

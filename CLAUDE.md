@@ -5,10 +5,14 @@ El plan completo está en `PLAN.md` y el inventario de recursos de Figma en `REC
 
 ## Reglas
 
-- **Fidelidad 1:1 con Figma** (`Jwd5F7ykAxQtFDWMCu96sw`, frames `15:85` Intro y `22:180` Home). Todo valor en px de Figma
+- **Fidelidad 1:1 con Figma** (`Jwd5F7ykAxQtFDWMCu96sw`, página "Invitación WWE 2": frames `257:282` Inicio y
+  `235:9` Invitacion; el diseño anterior de Yoshi era `15:85` / `22:180`). Todo valor en px de Figma
   se escribe como `calc(N * var(--k))`: `--k` es `--u` en el Home y `--ui` en la Intro (ver `src/styles/tokens.css`).
 - Móvil = Figma 1:1. Tablet y escritorio: tarjeta centrada sobre el video de la piscina (breakpoints en `tokens.css`, como Katalina).
-- Videos: 1080p en AV1, HEVC y H.264 con CRF calibrado por VMAF (`npm run calibrar`, luego `npm run recursos`).
+- Rellenos de imagen con ajustes en Figma (exposición, contraste…): el código de Figma no los trae; se usa el render
+  del nodo (p. ej. los estadios). Las exportaciones de nodos salen opacas sobre negro: no sirven como capa encima.
+- SF Pro no se puede servir en la web (licencia): clase `.sf` con la fuente del sistema (idéntica en Apple).
+- Videos: el diseño CumpleMania no usa; el flujo (AV1/HEVC/H.264 calibrado por VMAF) sigue en `videos-config.mjs`.
 - Textos editables solo en `src/data/evento.ts`.
 - Animaciones: solo `transform`/`opacity`, con `translate`/`rotate`/`scale` sueltos. GSAP solo para la apertura de la bolsa.
 - Los recursos maestros (`src/assets/`) salen de `npm run recursos` (`scripts/preparar-recursos.mjs`), nunca a mano.

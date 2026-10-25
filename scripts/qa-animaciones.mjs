@@ -12,7 +12,7 @@ await mkdir(VIDEO, { recursive: true });
 const fallas = [];
 const browser = await chromium.launch();
 
-async function probar(nombre, { reducido = false, selector = '.bolsa', video = false } = {}) {
+async function probar(nombre, { reducido = false, selector = '.silueta', video = false } = {}) {
   const context = await browser.newContext({
     viewport: { width: 412, height: 917 },
     isMobile: true,

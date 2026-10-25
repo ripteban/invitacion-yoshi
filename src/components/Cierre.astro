@@ -1,70 +1,99 @@
 ---
-// Cierre (72:86): agua con pato recortada a 412 × 759, "¡Que no falten las risas!" (72:160, −3°)
-// y "Nos vemos en la fiesta." (72:162). Las coordenadas de los hijos son absolutas del frame.
+// Cierre ("Frame 14" 257:328): "¡Que no falten las risas!" (−3°, Barlow Condensed Bold con degradado),
+// "Nos vemos en la fiesta." y el cinturón de campeón al pie. Va dentro de la columna de index.astro.
 import Img from './Img.astro';
-import VideoFondo from './VideoFondo.astro';
-import agua from '../assets/home/cierre.png';
+import cinturon from '../assets/cierre/cinturon.png';
 import { evento } from '../data/evento';
 ---
 
-<section class="cierre seccion" style="--top:1254.67;--z:3" aria-label="Cierre">
-  <!-- relleno 1080 × 1920 en "cover" sobre 412 × 759: se ve de 426.94 px de diseño de ancho;
-       va debajo del video, así que basta calidad 75 -->
-  <Img src={agua} ancho={426.94} class="abs cubrir" calidad={75} style="--x:0;--y:1254.67;--w:412;--h:759" />
-  <VideoFondo nombre="fondo-cierre" fondo="home" class="abs" style="--x:0;--y:1254.67;--w:412;--h:759" />
-
-  <h2 class="titulo lilita abs" style="--x:27.32;--y:1701.65;--w:357.955;--h:141.254" data-revelar>
-    <span>{evento.cierre[0]}</span>
-    <span>{evento.cierre[1]}</span>
-  </h2>
-  <p class="subtitulo lilita abs" style="--x:0.2;--y:1858.34;--w:412;--h:29.064" data-revelar>{evento.subcierre}</p>
+<section class="cierre" aria-label="Cierre">
+  <div class="cierre__textos">
+    <h2 class="cierre__titulo barlow texto-degradado" data-revelar>
+      <span>{evento.cierre[0]}</span>
+      <span>{evento.cierre[1]}</span>
+    </h2>
+    <p class="cierre__subtitulo sf" data-revelar>{evento.subcierre}</p>
+  </div>
+  <!-- 257:278 · cinturón (el maestro ya trae el recorte de Figma) -->
+  <div class="cierre__cinturon" data-revelar>
+    <Img src={cinturon} ancho={412} alt="Cinturón de campeón" calidad={88} />
+  </div>
 </section>
 
 <style>
   .cierre {
-    height: calc(759 * var(--k));
-    overflow: clip;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(35 * var(--k));
+    width: 100%;
   }
-  .titulo {
+  .cierre__textos {
+    position: relative;
+    width: calc(323.151 * var(--k));
+    height: calc(168 * var(--k));
+  }
+  /* Caja de Figma 269.447 × 124.665 centrada en x 161.69; el texto rota −3° sobre su centro */
+  .cierre__titulo {
+    --degradado: var(--degradado-plata);
+    position: absolute;
+    left: calc(161.69 * var(--k));
+    top: calc(1.4 * var(--k));
+    width: calc(269.447 * var(--k));
+    height: calc(124.665 * var(--k));
+    translate: -50% 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     margin: 0;
     rotate: -3deg;
-    color: var(--blanco);
-    font-size: calc(61.902 * var(--k));
-    line-height: calc(61.283 * var(--k));
-    letter-spacing: calc(-1.5476 * var(--k));
+    font-size: calc(55.912 * var(--k));
+    line-height: calc(55.352 * var(--k));
+    letter-spacing: calc(-1.3978 * var(--k));
     text-align: center;
-    text-shadow: var(--sombra-cierre);
     white-space: nowrap;
   }
-  .subtitulo {
+  .cierre__subtitulo {
+    position: absolute;
+    left: calc(162.03 * var(--k));
+    top: calc(141.52 * var(--k));
+    translate: -50% 0;
     color: var(--blanco);
-    font-size: calc(27.68 * var(--k));
-    line-height: calc(29.064 * var(--k));
-    text-align: center;
-    text-shadow: var(--sombra-subcierre);
+    font-size: calc(25.001 * var(--k));
+    line-height: calc(26.251 * var(--k));
+    font-weight: 400;
     white-space: nowrap;
+  }
+  .cierre__cinturon {
+    position: relative;
+    width: 100%;
+    height: calc(108.38 * var(--k));
   }
 
-  /* Al revelarse: el título aparece tambaleándose alrededor de sus −3° y luego late muy leve;
-     el subtítulo entra 150 ms después */
-  .titulo:global(.revelado) {
+  /* Al revelarse: el título aparece tambaleándose alrededor de sus −3° y luego late; el subtítulo entra
+     150 ms después y el cinturón sube con resorte y queda flotando */
+  .cierre__titulo:global(.revelado) {
     --base: -3deg;
     --escala: 1.02;
     animation:
       tambalear 900ms var(--ease-out) both,
       respirar 2.4s ease-in-out 900ms infinite;
   }
-  .subtitulo:global(.revelado) {
+  .cierre__subtitulo:global(.revelado) {
     --subir: 14;
     animation: aparecer-subiendo 600ms var(--ease-out) 150ms both;
   }
+  .cierre__cinturon:global(.revelado) {
+    --subir: 24;
+    animation:
+      aparecer-subiendo var(--dur-gentle) var(--ease-gentle) 250ms both,
+      flotar-suave 3.6s ease-in-out 1.3s infinite;
+  }
   @media (prefers-reduced-motion: reduce) {
-    .titulo:global(.revelado),
-    .subtitulo:global(.revelado) {
+    .cierre__titulo:global(.revelado),
+    .cierre__subtitulo:global(.revelado),
+    .cierre__cinturon:global(.revelado) {
       animation: encender 400ms var(--ease-out) both;
     }
   }

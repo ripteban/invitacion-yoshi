@@ -1,0 +1,135 @@
+---
+// Héroe de la invitación ("Hero" 235:22, 412 × 960). Capas en el orden de Figma: estadio, filtros de color
+// (saturación y luz suave), sombra del avatar, resplandor y haces de luz (modo trama), sombra del título,
+// avatar, título "CumpleMania", partículas, logo, gradas, sombra y placa "Eduardo".
+// La máscara de Figma (235:23, desvanecido hacia abajo en 412 × 917.87) se ve en el render sobre el estadio, el
+// avatar y lo que va entre ellos, pero no sobre las gradas ni la placa del nombre: aquí va una sola vez en un
+// contenedor con esas capas, que además aísla las mezclas igual que el frame sobre el fondo negro.
+import Img from './Img.astro';
+import estadio from '../assets/heroe/estadio.png';
+import cuerpo from '../assets/heroe/avatar-cuerpo.png';
+import cabeza from '../assets/heroe/avatar-cabeza.png';
+import titulo from '../assets/heroe/titulo.png';
+import eduardo from '../assets/heroe/eduardo.png';
+import gradas from '../assets/heroe/gradas.png';
+import sombraAvatar from '../assets/svg/sombra-avatar.svg';
+import resplandor from '../assets/svg/resplandor.svg';
+import hazIzq from '../assets/svg/haz-izq.svg';
+import hazDer from '../assets/svg/haz-der.svg';
+import sombraTitulo from '../assets/svg/sombra-titulo.svg';
+import particulas from '../assets/svg/particulas.svg';
+import logo from '../assets/svg/logo-wwe.svg';
+import sombraEduardo from '../assets/svg/sombra-eduardo.svg';
+import { evento } from '../data/evento';
+
+const svg = (s: { src: string; width: number; height: number }) => ({ src: s.src, width: s.width, height: s.height, alt: '' });
+---
+
+<div class="heroe abs" style="--x:0;--y:0;--w:412;--h:960;--z:2">
+  <div class="heroe__desvanecido abs" style="--x:0;--y:0;--w:412;--h:960">
+  <!-- 235:24–235:26 · estadio (render de Figma con los ajustes del relleno) y filtros de color -->
+  <Img src={estadio} ancho={412} calidad={85} class="abs" style="--x:0;--y:0;--w:412;--h:922" eager />
+  <div class="heroe__filtro heroe__filtro--saturacion abs" style="--x:0;--y:0;--w:412;--h:922"></div>
+  <div class="heroe__filtro heroe__filtro--luz abs" style="--x:0;--y:0;--w:412;--h:922"></div>
+  <!-- 235:27 · sombra del avatar -->
+  <img class="abs" {...svg(sombraAvatar)} style="--x:-39.334;--y:444.41;--w:461.587;--h:663.28" />
+  <!-- 235:28 · resplandor cálido y haces de luz, en modo trama -->
+  <img class="heroe__trama heroe__resplandor abs" {...svg(resplandor)} style="--x:15;--y:410;--w:370;--h:390" />
+  <img class="heroe__trama heroe__haz abs" {...svg(hazIzq)} style="--x:-8.73;--y:381.51;--w:167.408;--h:317.071" />
+  <img class="heroe__trama heroe__haz heroe__haz--der abs" {...svg(hazDer)} style="--x:253.27;--y:381.51;--w:167.408;--h:317.071" />
+  <!-- 235:40 · sombra del título -->
+  <img class="abs" {...svg(sombraTitulo)} style="--x:-93.253;--y:181.374;--w:594.52;--h:287.539" />
+  <!-- 235:32 · avatar: cuerpo (Intersect) y cabeza (Subtract) -->
+  <div class="heroe__avatar abs" style="--x:-3.943;--y:366.555;--w:402.846;--h:611.724">
+    <Img src={cuerpo} ancho={402.846} alt="" calidad={88} class="abs" style="--x:0;--y:151.777;--w:402.846;--h:459.947" />
+    <Img src={cabeza} ancho={408.271} alt="" calidad={88} class="abs" style="--x:14.761;--y:0.279;--w:408.271;--h:611.152" />
+  </div>
+  <!-- 235:41 · título "CumpleMania" (el maestro ya trae el recorte de Figma) -->
+  <Img src={titulo} ancho={399.553} alt="" calidad={88} class="heroe__titulo abs" style="--x:6.334;--y:275;--w:399.553;--h:140.553" />
+  <!-- 235:42 · partículas doradas, destellos y letrero superior -->
+  <img class="heroe__particulas abs" {...svg(particulas)} style="--x:0;--y:0;--w:412;--h:922" />
+  <!-- 235:119 · logo -->
+  <img class="heroe__logo abs" {...svg(logo)} style="--x:103.97;--y:135.15;--w:197.271;--h:166.812" />
+  </div>
+  <!-- 235:126 · gradas al pie, al 34 % y desvanecidas hacia abajo -->
+  <div class="heroe__gradas abs" style="--x:0;--y:828;--w:412;--h:132">
+    <Img src={gradas} ancho={412} alt="" calidad={80} />
+  </div>
+  <!-- 235:129 · sombra de la placa -->
+  <img class="abs" {...svg(sombraEduardo)} style="--x:-77.52;--y:722.9;--w:563.076;--h:272.331" />
+  <!-- 235:130 · placa con el nombre -->
+  <Img src={eduardo} ancho={402} alt="" calidad={88} class="heroe__nombre abs" style="--x:5;--y:781;--w:402;--h:134" />
+</div>
+<p class="solo-lectores">{evento.festejado} te invita a su CumpleMania</p>
+
+<style>
+  .heroe {
+    overflow: clip;
+  }
+  .heroe__desvanecido {
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 15%);
+    mask-image: linear-gradient(to top, transparent 0%, #000 15%);
+    -webkit-mask-size: 100% calc(917.87 * var(--k));
+    mask-size: 100% calc(917.87 * var(--k));
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+  .heroe__filtro--saturacion {
+    background: red;
+    opacity: 0.13;
+    mix-blend-mode: saturation;
+  }
+  .heroe__filtro--luz {
+    background: black;
+    opacity: 0.2;
+    mix-blend-mode: soft-light;
+  }
+  .heroe__trama {
+    mix-blend-mode: screen;
+  }
+  .heroe__gradas {
+    overflow: clip;
+    opacity: 0.34;
+    -webkit-mask-image: linear-gradient(to bottom, #000 38.86%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 38.86%, transparent 100%);
+  }
+
+  /* Entrada al terminar el fundido de la intro y luego en espera */
+  :global(.home.visible) .heroe :global(.heroe__titulo) {
+    --desde: 0.85;
+    animation:
+      entrar-escala var(--dur-gentle) var(--ease-gentle) both,
+      flotar-suave 4s ease-in-out var(--dur-gentle) infinite;
+  }
+  :global(.home.visible) .heroe__avatar {
+    --subir: 30;
+    animation: aparecer-subiendo 900ms var(--ease-out) 150ms both;
+  }
+  :global(.home.visible) .heroe :global(.heroe__nombre) {
+    --desde: 0.8;
+    animation: entrar-escala var(--dur-gentle) var(--ease-gentle) 350ms both;
+  }
+  :global(.home.visible) .heroe__resplandor {
+    animation:
+      encender 700ms var(--ease-out) both,
+      pulso-opacidad 3s ease-in-out 700ms infinite;
+  }
+  :global(.home.visible) .heroe__haz {
+    animation: pulso-opacidad 2.6s ease-in-out infinite;
+  }
+  :global(.home.visible) .heroe__haz--der {
+    animation-delay: -1.3s;
+  }
+  :global(.home.visible) .heroe__particulas {
+    animation: titilar-suave 2.2s ease-in-out infinite;
+  }
+  :global(.home.visible) .heroe__logo {
+    animation: flotar-suave 3.6s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.home.visible) .heroe :is(.heroe__avatar, .heroe__resplandor, .heroe__haz, .heroe__particulas, .heroe__logo),
+    :global(.home.visible) .heroe :global(:is(.heroe__titulo, .heroe__nombre)) {
+      animation: none;
+    }
+  }
+</style>

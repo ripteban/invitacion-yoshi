@@ -91,15 +91,38 @@ picture > img {
   font-weight: 400;
 }
 
-.montserrat {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 900;
-  font-style: italic;
-}
-
 .barlow {
   font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+}
+
+.barlow-semi {
+  font-family: 'Barlow Condensed', sans-serif;
   font-weight: 600;
+}
+
+/* SF Pro es la fuente del sistema de Apple: su licencia no permite servirla en la web. En iPhone, iPad y Mac
+   se usa la del sistema (idéntica a Figma); en Android y Windows, su equivalente (Roboto, Segoe UI). */
+.sf {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Texto con degradado de Figma (--degradado en el elemento) */
+.texto-degradado {
+  background-image: var(--degradado);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Imagen recortada como en Figma: alto y desplazamiento en % de su caja (--rh, --rt) */
+.recorte {
+  position: absolute;
+  left: 0;
+  top: var(--rt, 0);
+  width: 100%;
+  height: var(--rh, 100%);
 }
 
 .solo-lectores {

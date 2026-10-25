@@ -1,59 +1,48 @@
 ---
-// Botón "Toca el churro para abrirlo" (nodo 22:143): píldora amarilla con flecha.
-// Centrado en el ancho del frame, como el auto-layout de Figma, por si el texto cambia de largo.
-import flecha from '../assets/svg/flecha.svg';
+// Botón "Haz click para revelar" (placa 257:503, sin bisel exterior: en Figma está oculto) con flecha.
+import Placa from './Placa.astro';
+import flecha from '../assets/svg/flecha-arriba.svg';
 import { evento } from '../data/evento';
 ---
 
-<div class="fila abs" style="--x:0;--y:779.461;--w:412;--h:44.945">
-  <button class="boton montserrat anim-respirar" type="button" id="boton-abrir" style="--escala:1.03;--dur:1.8s">
-    <span>{evento.boton}</span>
-    <img class="boton__flecha anim-flotar-suave" style="--alto:1.5;--dur:1.2s" src={flecha.src} alt="" width={flecha.width} height={flecha.height} />
-  </button>
-</div>
+<Placa as="button" conBisel={false} id="boton-abrir" class="boton anim-respirar" style="--x:27.64;--y:790.765;--escala:1.03;--dur:1.8s">
+  <span class="boton__texto barlow">{evento.boton}</span>
+  <img class="boton__flecha anim-flotar-suave" style="--alto:1.5;--dur:1.2s" src={flecha.src} alt="" width={flecha.width} height={flecha.height} />
+</Placa>
 
 <style>
-  .fila {
-    display: flex;
-    justify-content: center;
-  }
-  .boton {
-    display: flex;
-    gap: calc(12.36 * var(--k));
-    align-items: center;
-    justify-content: center;
-    min-height: calc(44.945 * var(--k));
-    padding: calc(6.592 * var(--k)) calc(20 * var(--k));
-    border: calc(0.936 * var(--k)) solid var(--boton-borde);
-    border-radius: calc(93.636 * var(--k));
-    background: var(--boton-degradado);
-    filter: var(--boton-sombra);
-    color: var(--navy);
-    font-size: calc(20.6 * var(--k));
-    line-height: calc(21.63 * var(--k));
-    text-align: center;
+  .boton__texto {
+    /* Centrado 17.82 a la izquierda del centro de la placa, como en Figma */
+    position: absolute;
+    left: 50%;
+    top: calc(26.602 * var(--k));
+    translate: calc(-50% - 17.82 * var(--k)) 0;
+    color: var(--texto);
+    font-size: calc(32.067 * var(--k));
+    line-height: calc(27.257 * var(--k));
     white-space: nowrap;
-    cursor: pointer;
-  }
-  .boton:focus-visible {
-    outline: calc(3 * var(--k)) solid var(--navy);
-    outline-offset: calc(3 * var(--k));
   }
   .boton__flecha {
-    flex: none;
+    position: absolute;
+    left: calc(306.363 * var(--k));
+    top: calc(30.592 * var(--k));
     width: calc(16.319 * var(--k));
     height: calc(20.02 * var(--k));
   }
-  /* Con mouse: el botón se eleva al pasar el cursor (translate no choca con el pulso, que usa scale) */
+  :global(#boton-abrir) {
+    cursor: pointer;
+  }
+  :global(#boton-abrir:focus-visible) {
+    outline: calc(3 * var(--k)) solid var(--texto);
+    outline-offset: calc(3 * var(--k));
+  }
+  /* Con mouse: el botón se eleva (translate no choca con el pulso, que usa scale) */
   @media (hover: hover) and (pointer: fine) {
-    .boton {
-      transition:
-        translate 200ms var(--ease-out),
-        filter 200ms var(--ease-out);
+    :global(#boton-abrir) {
+      transition: translate 200ms var(--ease-out);
     }
-    .boton:hover:not(:disabled) {
+    :global(#boton-abrir:hover:not(:disabled)) {
       translate: 0 calc(-2 * var(--k));
-      filter: drop-shadow(0 calc(6 * var(--k)) calc(10 * var(--k)) rgba(11, 136, 170, 0.32));
     }
   }
 </style>

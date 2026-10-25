@@ -7,14 +7,16 @@
      pantallas grandes */
   --ui: min(calc(100vw / 412), calc(100svh / 917), 1.6px);
 
-  /* Colores (variables de Figma) */
-  --fondo-intro: #93e6f8;
-  --fondo-home: #cdf7fd;
-  --navy: #062652; /* --color-navy */
-  --blanco: #ffffff; /* --color-white */
-  --sol: #ffe52c; /* --color-sunshine: rayitas amarillas */
-  --boton-degradado: linear-gradient(to bottom, #fff349, #ffe329);
-  --boton-borde: #fff5aa;
+  /* Colores (variables de Figma, diseño CumpleMania) */
+  --fondo-intro: #93e6f8; /* relleno del frame "Inicio", detrás del estadio */
+  --fondo-home: #000000;
+  --negro: #000000;
+  --blanco: #ffffff;
+  --texto: #fffaf1; /* --cm-color-texto */
+  /* Degradados de los textos: de arriba hacia abajo (o de izquierda a derecha en la placa) */
+  --degradado-crema: linear-gradient(to bottom, #fffaf1, #999691);
+  --degradado-plata: linear-gradient(to bottom, #ffffff, #999999);
+  --degradado-plata-h: linear-gradient(to right, #ffffff, #999999);
 
   /* Curvas */
   /* Gentle = resorte masa 1, rigidez 100, amortiguación 15, muestreado a 1.022 s */
@@ -45,9 +47,7 @@
    (en :root var(--k) no está definida y el token quedaría inválido). */
 .intro,
 .home {
-  --boton-sombra: drop-shadow(0 calc(3.745 * var(--k)) calc(5.618 * var(--k)) rgba(11, 136, 170, 0.19));
-  --sombra-cierre: 0 calc(4.026 * var(--k)) 0 #064b98, 0 calc(6.542 * var(--k)) calc(7.549 * var(--k)) rgba(0, 59, 133, 0.63);
-  --sombra-subcierre: 0 calc(2.443 * var(--k)) 0 #0663a0;
-  /* En Figma es una sombra de capa sobre un PNG con transparencia: sigue la silueta, no la caja */
-  --sombra-yoshi: drop-shadow(calc(-1 * var(--k)) calc(4 * var(--k)) calc(7.9 * var(--k)) rgba(0, 0, 0, 0.62));
+  /* Placas de datos (Fecha, Lugar, Hora): brillo dorado + sombra. drop-shadow sigue la forma de la placa */
+  --sombra-dato: drop-shadow(0 0 calc(5.754 * var(--k)) rgba(255, 192, 61, 0.22))
+    drop-shadow(0 calc(3.452 * var(--k)) calc(3.452 * var(--k)) rgba(0, 0, 0, 0.8));
 }

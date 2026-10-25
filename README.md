@@ -1,7 +1,7 @@
 # invitacion-yoshi
 
-Invitación web "Party Familiar con Yoshi". Sitio estático (Astro + CSS + GSAP), réplica 1:1 del
-Figma `Jwd5F7ykAxQtFDWMCu96sw`, publicado en Cloudflare Pages.
+Invitación web "CumpleMania" de Eduardo (temática WWE). Sitio estático (Astro + CSS + GSAP), réplica 1:1 del
+Figma `Jwd5F7ykAxQtFDWMCu96sw` (página "Invitación WWE 2"), publicado en Cloudflare Pages.
 
 ## Uso diario
 
@@ -27,21 +27,24 @@ Requiere Node 22.
 - **Escala 1:1 con Figma**: todo valor de diseño se multiplica por `--u` (Home, ancho completo) o `--ui` (intro, que
   además cabe en alto). Ver `src/styles/tokens.css`. Cada elemento usa sus coordenadas de Figma (`.abs` con
   `--x --y --w --h`); el DOM va en orden de lectura y el orden de capas de Figma lo da `--z`.
-- **Intro** (`Intro.astro`, `src/scripts/intro.ts`): la bolsa flota y la mano la presiona; al tocarla (o el botón)
-  tiembla, se infla, se rasga la tira de arriba y salen volando los chicharrones (`chicharrones.ts`, GSAP
-  Physics2DPlugin). Luego el Home aparece con un fundido de 300 ms.
-- **Home**: entradas con resorte (título, Yoshi, sombra) y revelado al hacer scroll (`revelar.ts`).
+- **Intro** (`Intro.astro`, `src/scripts/intro.ts`): placa "SE ARMO LA PELEA!" y la silueta del campeón (modo
+  multiplicar sobre el estadio). Al tocarla (o el botón) tiembla, se ilumina, se desvanece y salen volando las W
+  (`chicharrones.ts`, GSAP Physics2DPlugin). Luego el Home aparece con un fundido de 300 ms.
+- **Home**: héroe con estadio, filtros de mezcla, haces de luz, avatar, "CumpleMania" y la placa "Eduardo"
+  (`Heroe.astro`); mensaje, placas de Fecha / Lugar / Hora y cierre con el cinturón. Entradas con resorte y revelado
+  al hacer scroll (`revelar.ts`).
+- **Fondos con ajustes de Figma**: los estadios usan el render de Figma del nodo, porque los ajustes de imagen
+  (exposición, contraste…) no vienen en el código.
+- **SF Pro**: la usa Figma en los datos y el cierre; su licencia no permite servirla, así que se usa la fuente del
+  sistema (idéntica en iPhone, iPad y Mac; Roboto o Segoe UI en Android y Windows).
 - **Tamaños de pantalla** (`--ancho` en `tokens.css`, igual que Katalina; si se cambian, actualizar `sizes` en
   `Img.astro`):
   - Móvil (< 600 px): la invitación ocupa todo el ancho, igual que en Figma.
   - Tablet vertical: tarjeta centrada de hasta 640 px.
-  - Tablet horizontal y escritorio: tarjeta de 440–540 px con esquinas redondeadas y sombra sobre el video de la
-    piscina desenfocado (`Fondo.astro`). Con mouse, la bolsa se acerca y el botón se eleva al pasar el cursor.
-- **Videos de fondo** (`VideoFondo.astro`, `videos.ts`): reemplazan los fondos de Figma en su misma caja; aparecen
-  con un fundido cuando de verdad se reproducen y se pausan fuera de pantalla. Van a la resolución original
-  (1080 × 1920) en AV1, HEVC y H.264; el navegador usa el primero que puede reproducir. La calidad de cada uno sale de
-  `npm run calibrar` (`scripts/calibrar-videos.mjs` → `scripts/videos.json`): el archivo más liviano con VMAF ≥ 92
-  contra el original, es decir, visualmente sin pérdida.
+  - Tablet horizontal y escritorio: tarjeta de 440–540 px con esquinas redondeadas y sombra sobre el estadio
+    desenfocado (`Fondo.astro`). Con mouse, la silueta se acerca y el botón se eleva al pasar el cursor.
+- **Videos de fondo**: este diseño no los usa. El flujo sigue listo (`VideoFondo.astro`, `videos.ts`,
+  `scripts/videos-config.mjs`): 1080p en AV1, HEVC y H.264 con la calidad calibrada por VMAF (`npm run calibrar`).
 - **Música** (`Musica.astro`, `musica.ts`): lista para cuando exista `public/medios/musica.m4a`.
 - **Carga**: la intro baja solo lo suyo (~660 KB sin video); el Home y los chicharrones se precargan en segundo
   plano después del evento `load` (`content-visibility` en `.home` hasta entonces).
